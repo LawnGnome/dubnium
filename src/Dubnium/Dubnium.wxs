@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
+	<Product Name="Dubnium 0.1.0" Id="231a78fd-36c4-4b59-b0b6-0a24f67f5401" Language="1033" Codepage="1252" Version="0.1.0" Manufacturer="Adam Harvey" UpgradeCode="3405ff7a-3c85-46a7-b33f-9d5830706966">
+		<Package Id="????????-????-????-????-????????????" Keywords="Installer" Description="Dubnium: DBGp Frontend" Manufacturer="Adam Harvey" InstallerVersion="100" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
+		<Condition Message="You need to be an administrator to install this product.">
+		  Privileged
+		</Condition>
+		<Media Id="1" Cabinet="Dubnium.cab" EmbedCab="yes" DiskPrompt="Archive #1" />
+		<Property Id="DiskPrompt" Value="Dubnium Installation" />
+		<Directory Id="ProgramFilesFolder" Name="PFiles">
+			<Directory Id="INSTALL_DIR" Name="Dubnium">
+				<Component Id="MainExecutable" Guid="e8fab772-7aa3-4e9f-a778-62b3812464be">
+					<File Id="DubniumEXE" Name="Dubnium.exe" LongName="Dubnium.exe" DiskId="1" Source="build\release\Dubnium\Dubnium.exe" Vital="yes">
+						<Shortcut Id="DubniumEXEMenu" Directory="ProgramMenuDir" Name="Dubnium" LongName="Dubnium 0.1.0" WorkingDirectory="INSTALL_DIR" Icon="DubniumICO" IconIndex="0" />
+					</File>
+					<File Id="DubniumManifest" Name="Dubnium.mft" LongName="Dubnium.exe.manifest" DiskId="1" Source="build\release\Dubnium\Dubnium.exe.manifest" Vital="yes" />
+				</Component>
+			</Directory>
+		</Directory>
+		<Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
+			<Directory Id="ProgramMenuDir" Name="Dubnium" LongName="Dubnium 0.1.0" />
+		</Directory>
+		<Feature Id="Complete" Level="1">
+			<ComponentRef Id="MainExecutable" />
+		</Feature>
+		<Icon Id="DubniumICO" SourceFile="images\icon.ico" />
+	</Product>
+</Wix>

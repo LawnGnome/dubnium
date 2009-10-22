@@ -1,0 +1,28 @@
+Import("env")
+
+libDBGp = env.StaticLibrary(target="DBGp", source=[
+		"Base64.cpp", 
+		"Breakpoint.cpp",
+		"Connection.cpp", 
+		"Context.cpp",
+		"Error/EngineError.cpp", 
+		"Error/Error.cpp", 
+		"Error/SocketError.cpp",
+		"Event/ConnectionEvent.cpp",
+		"Event/Event.cpp",
+		"Event/StatusChangeEvent.cpp",
+		"Event/StderrEvent.cpp",
+		"Event/StdoutEvent.cpp",
+		"Event/StreamEvent.cpp",
+		"Location.cpp",
+		"MessageArguments.cpp", 
+		"Property.cpp",
+		"Server.cpp", 
+		"Stack.cpp",
+		"StackLevel.cpp",
+		"Type.cpp",
+		"Typemap.cpp",
+		"Utility.cpp"
+		])
+
+Return("libDBGp")

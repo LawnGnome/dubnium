@@ -1,0 +1,27 @@
+Configuration entries:
+
+KEY				TYPE	DESCRIPTION
+
+Maximised			bool	True if the frame was last maximised
+
+Network/
+	IDEKey			string	The IDE key to match for incoming
+					connections; if blank, all connections
+					will be accepted
+	Port			long	The TCP port to listen on
+
+Perspective			string	The ConnectionPage perspective
+
+Position/
+	X			long	The last X position of the frame
+	Y			long	The last Y position of the frame
+
+Size/
+	Height			long	The last height of the frame
+	Width			long	The last width of the frame
+
+SourcePanel/
+	FontFace		string	Font to use for source display
+	FontSize		long	Font size to use in points
+	FontStyle		long	Font style
+	FontWeight		long	Font weight

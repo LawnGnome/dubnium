@@ -1,0 +1,14 @@
+Dubnium is a frontend for the DBGp debugging protocol, which means that it can
+be used in conjunction with PHP and XDebug to debug PHP scripts. In the future,
+support will also be offered for other DBGp implementations.
+
+The development of this project was sponsored by Google as part of their 2007
+Summer of Code, and I'd like to acknowledge the support of both Google and the
+project mentor, Derick Rethans.
+
+Please note that this version is undoubtedly of alpha quality, and frankly, if
+it weren't for the GSoC deadline, I wouldn't have pushed it out quite yet.
+Nevertheless, I hope it may be useful.
+
+Issues can be reported on the issue tracker at the Dubnium home page on Google
+Code, which is http://code.google.com/p/dubnium/.

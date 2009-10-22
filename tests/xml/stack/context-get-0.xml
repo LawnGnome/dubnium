@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="context_get" context="0">
+	<!-- Group Four -->
+	<property name="str" fullname="str" type="string" constant="0" children="0" size="10" encoding="base64"><![CDATA[R3JvdXAgRm91cg==]]></property>
+
+	<property name="arr" fullname="arr" type="array" constant="0" children="1">
+		<!-- 42 -->
+		<property name="0" fullname="$arr[0]" type="int" constant="0" children="0" encoding="base64"><![CDATA[NDI=]]></property>
+		<!-- 13.5 -->
+		<property name="1" fullname="$arr[1]" type="float" constant="0" children="0" encoding="base64"><![CDATA[MTMuNQ==]]></property>
+	</property>
+
+	<property name="obj" fullname="obj" classname="Object" type="object" constant="0" children="1">
+		<!-- 42 -->
+		<property name="constant" fullname="$obj->constant" type="int" constant="1" children="0" encoding="base64"><![CDATA[NDI=]]></property>
+		<!-- NULL -->
+		<property name="nul" fullname="$obj->nul" type="null" constant="0" children="0" encoding="base64"><![CDATA[TlVMTA==]]></property>
+	</property>
+</response>

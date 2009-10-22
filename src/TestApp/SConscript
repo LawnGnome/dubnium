@@ -1,0 +1,18 @@
+Import(["env", "libDBGp"])
+
+prog = env.Program(target="TestApp", 
+	source=[
+		"App.cpp",
+		"TestApp.cpp",
+		"TestFrameHandler.cpp",
+		libDBGp
+	]
+)
+
+env.Alias("TestApp", prog)
+env.Clean(prog, [
+		"TestApp.exe.manifest",
+		"TestApp.ilk",
+		"TestApp.pdb"
+		])
+

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg2168"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   sodipodi:docbase="/home/adam/trees/wxdbgp/images"
+   sodipodi:docname="breakpoint-function.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/adam/trees/wxdbgp/images/breakpoint-function.png"
+   inkscape:export-xdpi="247.5"
+   inkscape:export-ydpi="247.5"
+   sodipodi:modified="TRUE">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.8125"
+     inkscape:cx="41.142857"
+     inkscape:cy="37.84127"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="970"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <defs
+     id="defs2170">
+    <marker
+       style="overflow:visible"
+       id="TriangleOutS"
+       orient="auto"
+       refY="0.0"
+       inkscape:stockid="TriangleOutS"
+       refX="0.0">
+      <path
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.2)"
+         id="path8199" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutM"
+       orient="auto"
+       refY="0.0"
+       inkscape:stockid="TriangleOutM"
+       refX="0.0">
+      <path
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.4)"
+         id="path8202" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleOutMi"
+       orient="auto"
+       refY="0.0"
+       inkscape:stockid="TriangleOutMi"
+       refX="0.0">
+      <path
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="marker-start:none;stroke:#0000ff;stroke-width:1.0pt;fill:#0000ff;fill-rule:evenodd"
+         transform="scale(0.4)"
+         id="path8358" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata2173">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     id="layer1"
+     inkscape:groupmode="layer">
+    <g
+       id="g8411"
+       transform="translate(-0.1009317,0.1036247)">
+      <text
+         xml:space="preserve"
+         x="24.387239"
+         y="55.798641"
+         transform="scale(0.98184,1.0184959)"
+         id="text2176"
+         style="font-size:31.48405075px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><tspan
+           x="24.387239"
+           y="55.798641"
+           id="tspan2178"
+           sodipodi:role="line">fn</tspan></text>
+      <path
+         id="path8312"
+         sodipodi:nodetypes="cc"
+         d="M 9.2018624,9 C 43.064296,8.0600285 46.916148,24.89947 46.916148,24.89947"
+         style="fill:none;fill-rule:evenodd;stroke:#0000ff;stroke-width:4;stroke-linecap:round;stroke-linejoin:miter;marker-mid:none;marker-end:url(#TriangleOutMi);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>

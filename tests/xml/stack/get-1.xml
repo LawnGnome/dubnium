@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="stack_get">
+	<stack level="1" type="file" filename="dbgp://1" lineno="13" where="func" cmdbegin="13:8" cmdend="13:13" />
+</response>

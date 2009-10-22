@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="property_get" context="0">
+	<!-- Group Four -->
+	<property name="str" fullname="str" type="string" constant="0" children="0" size="10" encoding="base64"><![CDATA[R3JvdXAgRml2ZQ==]]></property>
+</response>

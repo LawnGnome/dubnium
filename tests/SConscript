@@ -1,0 +1,51 @@
+Import(["env", "libDBGp", "cppUnitBase", "debug"])
+
+import os
+
+testEnv = env.Clone()
+testEnv.Append(CPPPATH="#/tests")
+
+if os.name == "nt":
+	testEnv.Append(LIBPATH=["%s/lib" % cppUnitBase],
+		CPPPATH=["%s/include" % cppUnitBase]
+	)
+
+	if debug:
+		testEnv.Append(LIBS=["cppunitd"])
+	else:
+		testEnv.Append(LIBS=["cppunit"])
+else:
+	try:
+		testEnv.MergeFlags("!pkg-config --cflags --libs cppunit")
+	except:
+		pass
+
+conf = Configure(testEnv)
+
+if not conf.CheckLibWithHeader("cppunit", "cppunit/ui/text/TestRunner.h", "C++", "CppUnit::TextUi::TestRunner runner;"):
+	print "Linking against CPPUnit failed. Compiling tests will fail."
+
+#if conf.CheckLibWithHeader("qttestrunner", "cppunit/ui/qt/QtTestRunner.h", "C++", "CppUnit::QtUi::TestRunner runner;"):
+#	testEnv.Append(CPPDEFINES="HAVE_QTTESTRUNNER", LIBS="qttestrunner")
+
+conf.Finish()
+
+libDBGpTest = SConscript("Test/SConscript", exports={"env": testEnv, "libDBGp": libDBGp})
+
+runTests = testEnv.Program("RunTests", [
+		"Breakpoint.cpp",
+		"DBGpFixture.cpp",
+		"Feature.cpp",
+		"Init.cpp",
+		"Property.cpp",
+		"RunTests.cpp",
+		"Source.cpp",
+		"Stack.cpp",
+		"Status.cpp",
+		"Stream.cpp",
+		"Typemap.cpp",
+		libDBGpTest,
+		libDBGp
+	]
+)
+testEnv.Alias("test", runTests)

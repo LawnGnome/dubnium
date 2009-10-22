@@ -1,0 +1,13 @@
+* Allow binding to a given network interface.
+* Allow server port changes to take effect without restarting.
+* Change fonts in existing SourceTextCtrl instances when changed in the
+  options.
+* Colour theming support for source code.
+* Complete docblock coverage.
+* Don't build images into the binary itself.
+* Hook up IDE key UI.
+* Make the preferences dialog not suck.
+* Perspective load/save code that doesn't crash.
+* Syntax highlighting for non-PHP languages.
+* Use build system(s) that is/are convenient for users, rather than me.
+* Watchlist support.

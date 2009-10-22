@@ -1,0 +1,47 @@
+import os
+
+Import(["env", "images", "libDBGp"])
+
+source = [
+	"ArtProvider.cpp",
+	"BreakpointPanel.cpp",
+	"ConnectionPage.cpp",
+	"DebugPage.cpp",
+	"Location.cpp",
+	"MainFrame.cpp",
+	"OutputPanel.cpp",
+	"PaneMenu.cpp",
+	"PrefDialog.cpp",
+	"PropertiesPanel.cpp",
+	"PropertyDialog.cpp",
+	"PropertyTreeItem.cpp",
+	"SourcePanel.cpp",
+	"SourceTextCtrl.cpp",
+	"StackLevelClientData.cpp",
+	"StackPanel.cpp",
+	"ToolbarPanel.cpp",
+	"ToolTipWindow.cpp",
+	"WelcomePage.cpp",
+	"Dubnium.cpp",
+	libDBGp,
+	images
+]
+
+if os.name == "nt":
+	rc = env.RES("Dubnium.rc")
+	source.append(rc)
+
+prog = env.Program(
+	target="Dubnium",
+	source=source
+)
+
+env.Default(prog)
+env.Clean(prog, [
+		"Dubnium.exe.manifest",
+		"Dubnium.ilk",
+		"Dubnium.pdb"
+	]
+)
+
+Return("prog")

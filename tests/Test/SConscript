@@ -1,0 +1,10 @@
+Import(["env", "libDBGp"])
+
+libDBGpTest = env.StaticLibrary(target="libDBGpTest", source=[
+		"Connection.cpp",
+		"Server.cpp"
+	]
+)
+env.Alias("test", libDBGpTest)
+
+Return("libDBGpTest")

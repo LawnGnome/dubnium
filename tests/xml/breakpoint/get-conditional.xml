@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="breakpoint_get">
+	<breakpoint id="BP1" type="conditional" state="enabled" hit_count="1">
+		<expression encoding="base64"><![CDATA[YW5zd2VyID09IDQy]]></expression>
+	</breakpoint>
+</response>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="urn:debugger_protocol_v1" command="feature_set">
+	<error code="998" apperr="App Err">
+		<message>Set failed</message>
+	</error>
+</response>

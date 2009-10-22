@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="stack_get">
+	<stack level="0" type="file" filename="dbgp://0" lineno="42" />
+</response>

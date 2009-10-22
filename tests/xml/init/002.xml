@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="urn:debugger_protocol_v1" command="feature_set" transaction_id="0" status="starting" reason="ok">
+	<error code="900">
+		<message><![CDATA[encoding not supported]]></message>
+	</error>
+</response>

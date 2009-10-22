@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="breakpoint_get">
+	<breakpoint id="BP1" type="line" filename="dbgp://" lineno="42" state="enabled" hit_count="1" />
+</response>

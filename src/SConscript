@@ -1,0 +1,9 @@
+Import(["env", "libDBGp"])
+
+prog = env.Program(target="SocketServerTest", source=["SocketServerTest.cpp", libDBGp])
+env.Alias("SocketServerTest", prog)
+env.Clean(prog, [
+		"SocketServerTest.exe.manifest",
+		"SocketServerTest.ilk",
+		"SocketServerTest.pdb"
+		])

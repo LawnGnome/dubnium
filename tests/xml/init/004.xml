@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="urn:debugger_protocol_v1" command="feature_get" transaction_id="1" feature_name="detach" supported="1">
+	<![CDATA[1]]>
+</response>
+

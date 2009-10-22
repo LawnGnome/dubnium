@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="breakpoint_get">
+	<error code="205" apperr="App Err">
+		<message>Breakpoint failed</message>
+	</error>
+</response>

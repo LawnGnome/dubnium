@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="urn:debugger_protocol_v1" command="typemap_get" transaction_id="9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<map name="bool" type="bool" xsi:type="xsd:boolean" />
+	<map name="int" type="int" xsi:type="xsd:decimal" />
+	<map name="float" type="float" xsi:type="xsd:double" />
+	<map name="string" type="string" xsi:type="xsd:string" />
+	<map name="null" type="null" />
+	<map name="array" type="array" />
+	<map name="object" type="object" />
+	<map name="resource" type="resource" />
+</response>

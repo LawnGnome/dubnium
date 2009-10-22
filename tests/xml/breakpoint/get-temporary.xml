@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response command="breakpoint_get">
+	<breakpoint id="BP1" type="call" function="func" state="enabled" hit_count="1" temporary="1" />
+</response>
