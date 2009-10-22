@@ -35,7 +35,7 @@
 #include <wx/defs.h>
 
 // Program-wide window IDs.
-typedef enum {
+enum {
 	ID_DUBNIUM_LOWEST = wxID_HIGHEST + 1,
 	ID_BREAKPOINTPANEL_ADD_CALL,
 	ID_BREAKPOINTPANEL_ADD_CONDITIONAL,
