@@ -36,7 +36,7 @@
 
 static const wxString APPNAME = wxT("Dubnium");
 static const wxString SVNID = wxT("$Id$");
-static const wxString VERSION = wxT("0.1.0");
+static const wxString VERSION = wxT("0.2.0-dev");
 
 #endif
 
