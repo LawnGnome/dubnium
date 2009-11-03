@@ -30,6 +30,7 @@
 // }}}
 
 #include "DebugPage.h"
+#include "SourceTextCtrl.h"
 
 #include <wx/log.h>
 #include <wx/settings.h>
@@ -41,8 +42,7 @@ DebugPage::DebugPage(wxWindow *parent) : wxPanel(parent, ID_DEBUGPAGE) {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	wxTextCtrl *text = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_DONTWRAP | wxHSCROLL);
 	
-	// TODO: Pull out the real default monospace font.
-	text->SetFont(wxFont(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	text->SetFont(SourceTextCtrl::DefaultFont());
 	sizer->Add(text, 1, wxEXPAND | wxALL);
 
 	wxLog::SetActiveTarget(new wxLogTextCtrl(text));
