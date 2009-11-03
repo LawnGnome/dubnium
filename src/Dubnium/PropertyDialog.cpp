@@ -65,7 +65,7 @@ PropertyDialog::PropertyDialog(wxWindow *parent, wxWindowID id, const DBGp::Prop
 	sizer->SetSizeHints(this);
 
 	sizer->Add(grid, 1, wxEXPAND | wxALL);
-	sizer->Add(CreateSeparatedButtonSizer(wxID_CLOSE), 0, wxEXPAND | wxALL);
+	sizer->Add(CreateSeparatedButtonSizer(wxOK), 0, wxEXPAND | wxALL);
 }
 // }}}
 
