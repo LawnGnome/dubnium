@@ -51,7 +51,6 @@
 class ConnectionPage : public wxPanel, public SourceTextCtrlHandler {
 	public:
 		ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const wxString &fileURI, const wxString &language);
-		virtual ~ConnectionPage();
 
 		virtual void BreakpointAdd(int line, bool temporary = false);
 		void BreakpointRemove(const wxString &file, int line);

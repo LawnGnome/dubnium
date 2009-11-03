@@ -90,11 +90,6 @@ ConnectionPage::ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const w
 	mgr->Update();
 }
 // }}}
-// {{{ ConnectionPage::~ConnectionPage()
-ConnectionPage::~ConnectionPage() {
-	conn->Close();
-}
-// }}}
 
 // {{{ void ConnectionPage::BreakpointAdd(int line, bool temporary)
 void ConnectionPage::BreakpointAdd(int line, bool temporary) {
