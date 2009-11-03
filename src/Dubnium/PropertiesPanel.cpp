@@ -49,6 +49,14 @@ PropertiesPanel::PropertiesPanel(ConnectionPage *parent, wxWindowID id) : Toolba
 }
 // }}}
 
+// {{{ DBGp::Property *PropertiesPanel::GetProperty(const wxString &name)
+DBGp::Property *PropertiesPanel::GetProperty(const wxString &name) {
+	if (properties.count(name) > 0) {
+		return properties.find(name)->second;
+	}
+	return NULL;
+}
+// }}}
 // {{{ wxString PropertiesPanel::GetPropertyValue(const wxString &name) const
 wxString PropertiesPanel::GetPropertyValue(const wxString &name) const {
 	if (properties.count(name) > 0) {
@@ -112,6 +120,7 @@ void PropertiesPanel::AddProperty(const wxTreeItemId &parent, const DBGp::Proper
 		for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
 			AddProperty(id, i->second);
 		}
+		properties[prop->GetFullName()] = new DBGp::Property(*prop);
 	}
 	else {
 		wxString label(prop->GetName());

@@ -34,12 +34,15 @@
 
 #include <wx/string.h>
 
+#include "DBGp/Property.h"
+
 class SourceTextCtrlHandler {
 	public:
 		inline virtual ~SourceTextCtrlHandler() {}
 
 		virtual void BreakpointAdd(int line, bool temporary = false) = 0;
 		virtual void BreakpointRemove(int line) = 0;
+		virtual DBGp::Property *GetProperty(const wxString &name) = 0;
 		virtual wxString GetPropertyValue(const wxString &name) const = 0;
 };
 

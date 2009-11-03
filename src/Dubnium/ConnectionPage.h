@@ -57,6 +57,7 @@ class ConnectionPage : public wxPanel, public SourceTextCtrlHandler {
 		virtual void BreakpointRemove(int line);
 		inline DBGp::Connection *GetConnection() { return conn; }
 		inline wxString GetLastFile() const { return lastFile; }
+		virtual DBGp::Property *GetProperty(const wxString &name);
 		virtual wxString GetPropertyValue(const wxString &name) const;
 		void SavePerspective();
 		void SetStackLevel(DBGp::StackLevel *level);

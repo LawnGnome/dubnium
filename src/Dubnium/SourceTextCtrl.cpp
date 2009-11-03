@@ -226,7 +226,6 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 		int line = LineFromPosition(pos);
 		int col = pos - PositionFromLine(line);
 		wxString name(GetLine(line));
-		wxString text;
 		size_t pos;
 		// TODO: This should be language specific.
 		static const wxString varChars(wxT("abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_->.$[]'"));
@@ -237,18 +236,40 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 		}
 
 		pos = name.find_last_not_of(varChars);
-		if (pos != std::string::npos) {
+		if (pos != std::string::npos && pos < name.Length()) {
 			name = name.Mid(pos + 1);
 		}
 
-		wxString value(handler->GetPropertyValue(name));
-		if (value != wxEmptyString) {
-			text << name << wxT(" : ") << value;
+		DBGp::Property *prop = handler->GetProperty(name);
+		if (prop) {
+			wxString text;
+
+			text << name << wxT(" (") << prop->GetType().GetName() << wxT(") : ");
+
+			if (prop->HasChildren()) {
+				/* We'll do a shallow dump. People can look at
+				 * the properties panel and dialog (or the
+				 * context menu I, er, haven't implemented yet)
+				 * if they want detailed information. */
+				const DBGp::Property::PropertyMap children = prop->GetChildren();
+				for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
+					DBGp::Property *child = i->second;
+					text << wxT("\n") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
+					if (child->HasChildren()) {
+						text << _("<complex data structure>");
+					}
+					else {
+						text << child->GetData();
+					}
+				}
+			}
+			else {
+				text << prop->GetData();
+			}
 
 			tipWindow = new wxTipWindow(this, text, 640, &tipWindow);
 			tipWindow->SetBoundingRect(wxRect(-1, -1, -1, -1));
 		}
-
 	}
 }
 // }}}

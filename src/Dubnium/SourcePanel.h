@@ -48,6 +48,7 @@ class SourcePanel : public ToolbarPanel, public SourceTextCtrlHandler {
 
 		virtual void BreakpointAdd(int line, bool temporary = false);
 		virtual void BreakpointRemove(int line);
+		virtual DBGp::Property *GetProperty(const wxString &name);
 		virtual wxString GetPropertyValue(const wxString &name) const;
 		void Unavailable(const wxString &message);
 };

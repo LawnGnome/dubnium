@@ -128,6 +128,11 @@ void ConnectionPage::BreakpointRemove(int line) {
 	}
 }
 // }}}
+// {{{ DBGp::Property *ConnectionPage::GetProperty(const wxString &name)
+DBGp::Property *ConnectionPage::GetProperty(const wxString &name) {
+	return properties->GetProperty(name);
+}
+// }}}
 // {{{ wxString ConnectionPage::GetPropertyValue(const wxString &name) const
 wxString ConnectionPage::GetPropertyValue(const wxString &name) const {
 	return properties->GetPropertyValue(name);

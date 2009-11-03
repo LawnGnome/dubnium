@@ -45,6 +45,7 @@ class PropertiesPanel : public ToolbarPanel, public ToolTipProvider {
 	public:
 		PropertiesPanel(ConnectionPage *parent, wxWindowID id = wxID_ANY);
 
+		DBGp::Property *GetProperty(const wxString &name);
 		wxString GetPropertyValue(const wxString &name) const;
 		virtual wxString GetTipText(const wxPoint &mousePos);
 		void SetStackLevel(const DBGp::StackLevel *level);

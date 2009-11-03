@@ -51,6 +51,11 @@ void SourcePanel::BreakpointRemove(int line) {
 	parent->BreakpointRemove(line);
 }
 // }}}
+// {{{ DBGp::Property *SourcePanel::GetProperty(const wxString &name)
+DBGp::Property *SourcePanel::GetProperty(const wxString &name) {
+	return parent->GetProperty(name);
+}
+// }}}
 // {{{ wxString SourcePanel::GetPropertyValue(const wxString &name) const
 wxString SourcePanel::GetPropertyValue(const wxString &name) const {
 	return parent->GetPropertyValue(name);
