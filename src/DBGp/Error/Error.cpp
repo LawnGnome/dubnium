@@ -1,5 +1,5 @@
 // {{{ Copyright notice
-/* Copyright (c) 2007, Adam Harvey
+/* Copyright (c) 2007-2009, Adam Harvey
  *
  * All rights reserved.
  *
