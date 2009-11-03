@@ -115,4 +115,4 @@ void Server::OnServerEvent(wxSocketEvent &event) {
 }
 // }}}
 
-// vim:set fdm=marker ts=8 noet cin:
+// vim:set fdm=marker ts=8 sw=8 noet cin:

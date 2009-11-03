@@ -120,4 +120,4 @@ wxXmlDocument Connection::SendCommandWait(const wxString &command, DBGp::Message
 }
 // }}}
 
-// vim:set fdm=marker ts=8 noet cin:
+// vim:set fdm=marker ts=8 sw=8 noet cin:

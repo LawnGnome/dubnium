@@ -40,4 +40,4 @@ static const wxString VERSION = wxT("0.2.0-dev");
 
 #endif
 
-// vim:set fdm=marker ts=8 noet cin:
+// vim:set fdm=marker ts=8 sw=8 noet cin:
