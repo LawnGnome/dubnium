@@ -155,6 +155,9 @@ void MainFrame::OnConnection(DBGp::ConnectionEvent &event) {
 		notebook->AddPage(new ConnectionPage(notebook, event.GetConnection(), event.GetFileURI(), event.GetLanguage()), wxURI::Unescape(wxURI(event.GetFileURI()).GetPath()), true);
 	}
 	else {
+		// TODO: Ponder how we want to notify the user of this. Indeed,
+		// ponder if we want to notify the user of this.
+		wxLogDebug(wxT("Connection refused due to IDE key mismatch: expected %s; got %s."), expectedKey.c_str(), event.GetIDEKey().c_str());
 		event.GetConnection()->Close();
 	}
 }
