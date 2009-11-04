@@ -38,11 +38,13 @@
 #include <wx/gbsizer.h>
 #include <wx/panel.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 // {{{ Event table
 BEGIN_EVENT_TABLE(PrefDialog, wxDialog)
 	EVT_BUTTON(wxID_CLOSE, PrefDialog::OnClose)
 	EVT_BUTTON(ID_PREFDIALOG_FONT, PrefDialog::OnFont)
+	EVT_TEXT(ID_PREFDIALOG_IDEKEY, PrefDialog::OnIDEKey)
 	EVT_SPINCTRL(ID_PREFDIALOG_PORT, PrefDialog::OnPort)
 END_EVENT_TABLE()
 // }}}
@@ -50,17 +52,22 @@ END_EVENT_TABLE()
 // {{{ PrefDialog::PrefDialog(MainFrame *parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name)
 PrefDialog::PrefDialog(MainFrame *parent, wxWindowID id, const wxString &title, const wxPoint &pos, const wxSize &size, long style, const wxString &name) : wxDialog(dynamic_cast<wxWindow *>(parent), id, title, pos, size, style, name), config(wxConfigBase::Get()), parent(parent) {
 	wxGridBagSizer *sizer = new wxGridBagSizer(3, 3);
+	wxTextCtrl *ideKey = NULL;
 
 	sizer->Add(new wxStaticText(this, -1, _("Font used for source code:")), wxGBPosition(0, 0), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxLEFT);
 	sizer->Add(fontButton = new wxButton(this, ID_PREFDIALOG_FONT, _("Change Source Code Font")), wxGBPosition(0, 1), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 	UpdateFontButton();
 
-	sizer->Add(new wxStaticText(this, -1, _("Port to listen on:")), wxGBPosition(1, 0), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxLEFT);
-	sizer->Add(new wxSpinCtrl(this, ID_PREFDIALOG_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 65535, config->Read(wxT("Network/Port"), 9000)), wxGBPosition(1, 1), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
+	sizer->Add(new wxStaticText(this, -1, _("IDE key:")), wxGBPosition(1, 0), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxLEFT);
+	sizer->Add(ideKey = new wxTextCtrl(this, ID_PREFDIALOG_IDEKEY, config->Read(wxT("Network/IDEKey"), wxEmptyString)), wxGBPosition(1, 1), wxDefaultSpan, wxEXPAND);
+	ideKey->SetToolTip(_("Leave blank to accept all IDE keys."));
 
-	sizer->Add(new wxStaticText(this, -1, _("Note: Port changes require a restart to take effect.")), wxGBPosition(2, 0), wxGBSpan(1, 2), wxLEFT);
+	sizer->Add(new wxStaticText(this, -1, _("Port to listen on:")), wxGBPosition(2, 0), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxLEFT);
+	sizer->Add(new wxSpinCtrl(this, ID_PREFDIALOG_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 65535, config->Read(wxT("Network/Port"), 9000)), wxGBPosition(2, 1), wxDefaultSpan, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 
-	sizer->Add(new wxButton(this, wxID_CLOSE), wxGBPosition(3, 1), wxDefaultSpan, wxEXPAND | wxRIGHT);
+	sizer->Add(new wxStaticText(this, -1, _("Note: Port changes require a restart to take effect.")), wxGBPosition(3, 0), wxGBSpan(1, 2), wxLEFT);
+
+	sizer->Add(new wxButton(this, wxID_CLOSE), wxGBPosition(4, 1), wxDefaultSpan, wxEXPAND | wxRIGHT);
 
 	SetAutoLayout(true);
 	SetSizer(sizer);
@@ -83,6 +90,12 @@ void PrefDialog::OnFont(wxCommandEvent &event) {
 		config->Write(wxT("SourcePanel/FontWeight"), font.GetWeight());
 		UpdateFontButton();
 	}
+}
+// }}}
+// {{{ void PrefDialog::OnIDEKey(wxCommandEvent &event)
+void PrefDialog::OnIDEKey(wxCommandEvent &event) {
+	wxTextCtrl *ideKey = dynamic_cast<wxTextCtrl *>(event.GetEventObject());
+	config->Write(wxT("Network/IDEKey"), ideKey->GetValue());
 }
 // }}}
 // {{{ void PrefDialog::OnPort(wxSpinEvent &event)

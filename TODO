@@ -5,7 +5,6 @@
 * Colour theming support for source code.
 * Complete docblock coverage.
 * Don't build images into the binary itself.
-* Hook up IDE key UI.
 * Make the preferences dialog not suck.
 * Perspective load/save code that doesn't crash.
 * Syntax highlighting for non-PHP languages.

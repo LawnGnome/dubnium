@@ -50,6 +50,7 @@ class PrefDialog : public wxDialog {
 
 		void OnClose(wxCommandEvent &event);
 		void OnFont(wxCommandEvent &event);
+		void OnIDEKey(wxCommandEvent &event);
 		void OnPort(wxSpinEvent &event);
 		void UpdateFontButton();
 
