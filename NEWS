@@ -2,7 +2,7 @@ Version 0.2.0 (???)
 * Changed the text on the property dialog button to OK.
 * Fixed segfault on close due to double call to wxSocketBase::Close().
 * Improved property tooltips.
-* Made the debug log use the same font as the source text control.
+* Made the debug log and output panel use the same font as the source text control.
 
 Version 0.1.0 (August 20, 2007)
 * Initial release.

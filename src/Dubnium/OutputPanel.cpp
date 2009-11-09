@@ -30,6 +30,7 @@
 // }}}
 
 #include "OutputPanel.h"
+#include "SourceTextCtrl.h"
 
 #include <wx/artprov.h>
 #include <wx/bmpbuttn.h>
@@ -55,6 +56,7 @@ OutputPanel::OutputPanel(ConnectionPage *parent, wxWindowID id) : ToolbarPanel(p
 	toolbar->Realize();
 
 	output = new wxRichTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxRE_READONLY | wxRE_MULTILINE);
+	output->SetFont(SourceTextCtrl::DefaultFont());
 	sizer->Add(output, 1, wxEXPAND);
 }
 // }}}
