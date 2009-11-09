@@ -428,6 +428,17 @@ namespace DBGp {
 			/** The breakpoint type. */
 			Type type;
 
+			/**
+			 * An internal function to try setting a method breakpoint using XDebug's non-standard -a option.
+			 *
+			 * @param[in] args The arguments that have already been
+			 *                 set for the message within Set().
+			 * @return True if the breakpoint was set within this
+			 *         function.
+			 * @throws SocketError Thrown if a communications error
+			 *                     occurs.
+			 */
+			bool SetMethodBreakpoint(MessageArguments args) throw (SocketError);
 	};
 }
 

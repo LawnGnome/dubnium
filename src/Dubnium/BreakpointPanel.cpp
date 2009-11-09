@@ -31,6 +31,7 @@
 
 #include "BreakpointPanel.h"
 #include "ConnectionPage.h"
+#include "FunctionBreakpointDialog.h"
 
 #include <algorithm>
 
@@ -139,12 +140,20 @@ void BreakpointPanel::Update() {
 
 // {{{ void BreakpointPanel::OnAddCall(wxCommandEvent &event)
 void BreakpointPanel::OnAddCall(wxCommandEvent &event) {
-	wxString function(wxGetTextFromUser(_("Please enter the name of a function. A breakpoint will be triggered when the given function is called."), _("Add Function Call Breakpoint"), wxEmptyString, this));
-	if (function != wxEmptyString) {
+	FunctionBreakpointDialog fbd(this, _("Add Function Call Breakpoint"));
+
+	if (fbd.ShowModal()) {
+		wxString function(fbd.GetFunction());
+
+		if (fbd.IsMethod()) {
+			function.Prepend(fbd.GetClass() + wxT("::"));
+		}
+
 		DBGp::Breakpoint *bp = parent->GetConnection()->CreateBreakpoint();
 		bp->SetCallType(function);
 		bp->Set();
 	}
+
 	Update();
 }
 // }}}
@@ -161,12 +170,20 @@ void BreakpointPanel::OnAddException(wxCommandEvent &event) {
 // }}}
 // {{{ void BreakpointPanel::OnAddReturn(wxCommandEvent &event)
 void BreakpointPanel::OnAddReturn(wxCommandEvent &event) {
-	wxString function(wxGetTextFromUser(_("Please enter the name of a function. A breakpoint will be triggered when the given function returns."), _("Add Function Return Breakpoint"), wxEmptyString, this));
-	if (function != wxEmptyString) {
+	FunctionBreakpointDialog fbd(this, _("Add Function Return Breakpoint"));
+
+	if (fbd.ShowModal()) {
+		wxString function(fbd.GetFunction());
+
+		if (fbd.IsMethod()) {
+			function.Prepend(fbd.GetClass() + wxT("::"));
+		}
+
 		DBGp::Breakpoint *bp = parent->GetConnection()->CreateBreakpoint();
 		bp->SetReturnType(function);
 		bp->Set();
 	}
+
 	Update();
 }
 // }}}

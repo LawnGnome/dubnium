@@ -185,6 +185,11 @@ void Breakpoint::Set() throw (EngineError, SocketError) {
 
 		case CALL:
 		case RETURN:
+			// Hack to workaround XDebug bug #411.
+			if (SetMethodBreakpoint(args)) {
+				return;
+			}
+
 			args.Append(wxT("-m"), function);
 			break;
 
@@ -280,6 +285,57 @@ wxString Breakpoint::TypeToString(Type type) {
 		return wxT("watch");
 	}
 	return wxT("line");
+}
+// }}}
+
+// {{{ bool Breakpoint::SetMethodBreakpoint(const MessageArguments &args) throw (SocketError)
+bool Breakpoint::SetMethodBreakpoint(MessageArguments args) throw (SocketError) {
+	/* XDebug has a bug (#411) that means that we have to use a
+	 * non-standard way of setting class/object breakpoints. We'll do this
+	 * by basically replicating the Set codepath with the non-standard
+	 * method and seeing what we get back -- if we get an exception, we'll
+	 * carry on with the traditional method. */
+	int pos = wxNOT_FOUND;
+
+	// :: or -> are both valid separators.
+	if ((pos = function.Find(wxT("::"))) == wxNOT_FOUND) {
+		pos = function.Find(wxT("->"));
+	}
+
+	if (pos != wxNOT_FOUND) {
+		wxString cls(function.Left(pos));
+		wxString method(function.Mid(pos + 2));
+
+		args.Append(wxT("-a"), cls);
+		args.Append(wxT("-m"), method);
+
+		try {
+			if (isSet) {
+				conn->SendCommandWait(wxT("breakpoint_update"), args.Append(wxT("-d"), id));
+			}
+			else {
+				wxXmlDocument doc(conn->SendCommandWait(wxT("breakpoint_set"), args));
+				id = doc.GetRoot()->GetPropVal(wxT("id"), wxEmptyString);
+			}
+			
+			isSet = true;
+			return true;
+		}
+		catch (EngineError e) {
+			/* The engine doesn't understand -a (which means it's
+			 * compliant with the DBGp standard), so we'll just
+			 * fall through to the return false at the end of the
+			 * method. */
+		}
+		catch (...) {
+			/* It's a bigger error than just "the engine doesn't
+			 * know what -a is because it's non-standard", so we'll
+			 * rethrow and let the caller handle it. */
+			throw;
+		}
+	}
+
+	return false;
 }
 // }}}
 
