@@ -223,6 +223,7 @@ void ConnectionPage::OnStatusChange(DBGp::StatusChangeEvent &event) {
 	}
 	else {
 		UpdateToolBar(false, false, false, false, false);
+		breakpoint->Enable(false);
 		stack->SetStack(NULL);
 		properties->SetStackLevel(NULL);
 		source->Unavailable(_("No source is available as execution has finished."));

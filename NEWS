@@ -1,6 +1,7 @@
 Version 0.2.0 (???)
 * Added support for setting class/object method breakpoints.
 * Changed the text on the property dialog button to OK.
+* Disabled the breakpoint panel after execution is complete.
 * Fixed segfault on close due to double call to wxSocketBase::Close().
 * Improved property tooltips.
 * Made the debug log and output panel use the same font as the source text control.
