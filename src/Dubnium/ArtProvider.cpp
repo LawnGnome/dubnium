@@ -30,14 +30,20 @@
 // }}}
 
 #include "ArtProvider.h"
-#include "images.h"
 
 #include <wx/image.h>
 #include <wx/log.h>
-#include <wx/mstream.h>
+
+#ifdef BUILTIN_IMAGES
+#	include "images.h"
+#	include <wx/mstream.h>
+#else
+#	include <wx/filefn.h>
+#endif
 
 // {{{ wxBitmap ArtProvider::CreateBitmap(const wxArtID &id, const wxArtClient &client, const wxSize &size)
 wxBitmap ArtProvider::CreateBitmap(const wxArtID &id, const wxArtClient &client, const wxSize &size) {
+#ifdef BUILTIN_IMAGES
 	const Images::Image *img = Images::GetImage(id);
 	if (img == NULL) {
 		return wxNullBitmap;
@@ -45,6 +51,31 @@ wxBitmap ArtProvider::CreateBitmap(const wxArtID &id, const wxArtClient &client,
 
 	wxMemoryInputStream mis(img->image, img->size);
 	wxImage image(mis, wxBITMAP_TYPE_PNG);
+#elif DUBNIUM_DEBUG
+	wxString path(wxT(__FILE__));
+	path = wxPathOnly(path);
+	path << wxT("/../../images/") << id << wxT(".png");
+
+	if (!wxFileExists(path)) {
+		/* This is a debug message only, since for built-in IDs like
+		 * wxART_DELETE this will just fall through to the wxWidgets
+		 * default provider and isn't an error. */
+		wxLogDebug(wxT("Requested image ID: %s; NOT FOUND as %s"), id.c_str(), path.c_str());
+		return wxNullBitmap;
+	}
+
+	wxLogDebug(wxT("Requested image ID: %s; found as %s"), id.c_str(), path.c_str());
+
+	wxImage image(path, wxBITMAP_TYPE_PNG);
+#else
+	wxString path;
+	path << wxT(PREFIX) << wxT("/share/dubnium/") << id << wxT(".png");
+	if (!wxFileExists(path)) {
+		return wxNullBitmap;
+	}
+
+	wxImage image(path, wxBITMAP_TYPE_PNG);
+#endif
 
 	/* There seems to be a tendency for wxArtProvider to request images of
 	 * size (-1, -1), so we need to avoid trying to rescale for them. */

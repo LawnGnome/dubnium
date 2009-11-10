@@ -3,7 +3,7 @@
 BINARY="$1"
 TARGET="$2"
 
-APP_BUNDLE="wxDBGp.app"
+APP_BUNDLE="Dubnium.app"
 
 rm -rf "$TARGET"
 mkdir -p "$TARGET"

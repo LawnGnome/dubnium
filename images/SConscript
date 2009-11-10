@@ -1,13 +1,19 @@
 import glob
+import os
 
 Import(["env"])
 
-actions = []
-files = []
-for file in glob.glob("*.png"):
-	actions.append(env.Data("%s.data.c" % file, file))
-images = env.StaticLibrary(target="images", source=["images.cpp"])
-env.Depends(images, actions)
+if os.name == "nt":
+	actions = []
+	files = []
+	for file in glob.glob("*.png"):
+		actions.append(env.Data("%s.data.c" % file, file))
+	images = env.StaticLibrary(target="images", source=["images.cpp"])
+	env.Depends(images, actions)
+else:
+	Import(["prefix"])
+	install = env.Install("%s/share/dubnium" % prefix, glob.glob("*.png"))
+	images = env.Alias("install", install)
 
 Return("images")
 

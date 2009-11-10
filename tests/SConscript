@@ -1,4 +1,4 @@
-Import(["env", "libDBGp", "cppUnitBase", "debug"])
+Import(["env", "libDBGp", "debug"])
 
 import os
 
@@ -6,6 +6,8 @@ testEnv = env.Clone()
 testEnv.Append(CPPPATH="#/tests")
 
 if os.name == "nt":
+	Import(["cppUnitBase"])
+
 	testEnv.Append(LIBPATH=["%s/lib" % cppUnitBase],
 		CPPPATH=["%s/include" % cppUnitBase]
 	)

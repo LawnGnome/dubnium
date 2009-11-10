@@ -1,7 +1,5 @@
 Version 0.2.0
 * Allow server port changes to take effect without restarting.
-* Don't build images into the binary itself on sane platforms. (That is,
-  everything not called Windows.)
 * Investigate watchlist support.
 * Perspective load/save code that doesn't crash.
 

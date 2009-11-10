@@ -1,6 +1,6 @@
 import os
 
-Import(["env", "images", "libDBGp"])
+Import(["env", "libDBGp"])
 
 source = [
 	"ArtProvider.cpp",
@@ -24,8 +24,7 @@ source = [
 	"ToolTipWindow.cpp",
 	"WelcomePage.cpp",
 	"Dubnium.cpp",
-	libDBGp,
-	images
+	libDBGp
 ]
 
 if os.name == "nt":
@@ -44,6 +43,11 @@ env.Clean(prog, [
 		"Dubnium.pdb"
 	]
 )
+
+if os.name != "nt":
+	Import(["prefix"])
+	install = env.InstallAs("%s/bin/dubnium" % prefix, prog)
+	env.Alias("install", install)
 
 Return("prog")
 
