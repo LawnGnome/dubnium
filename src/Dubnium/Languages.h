@@ -96,17 +96,25 @@ namespace Languages {
 		{
 			wxSTC_LEX_PHP,
 			7,
-			wxT("and or xor __FILE__ exception __LINE__ array as ")
-			wxT("break case class const continue declare default ")
-			wxT("die do echo else elseif empty enddeclare endfor ")
-			wxT("endforeach endif endswitch endwhile eval exit ")
-			wxT("extends for foreach function global if include ")
-			wxT("include_once isset list new print require ")
-			wxT("require_once return static switch unset use var ")
-			wxT("while __FUNCTION__ __CLASS__ __METHOD__ final ")
-			wxT("php_user_filter interface implements extends ")
-			wxT("public private protected abstract clone try ")
-			wxT("catch throw cfunction old_function this")
+			// PHP keywords, per
+			// http://au2.php.net/manual/en/reserved.keywords.php
+			wxT("abstract and array as break case catch ")
+			wxT("cfunction class clone const continue declare ")
+			wxT("default do else elseif enddeclare endfor ")
+			wxT("endforeach endif endswitch endwhile extends ")
+			wxT("final for foreach function global goto if ")
+			wxT("implements interface instanceof namespace new ")
+			wxT("old_function or private protected public static ")
+			wxT("switch throw try use var while xor ")
+
+			// PHP compile time constants.
+			wxT("__CLASS__ __DIR__ __FILE__ __FUNCTION__ ")
+			wxT("__METHOD__ __NAMESPACE__ ")
+
+			// Language constructs.
+			wxT("die echo empty exit eval include include_once ")
+			wxT("isset list require require_once return print ")
+			wxT("unset")
 		},
 		{-1, 0, NULL}
 	};
