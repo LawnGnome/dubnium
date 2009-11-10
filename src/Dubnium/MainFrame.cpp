@@ -38,6 +38,7 @@
 #include "WelcomePage.h"
 
 #include <wx/aboutdlg.h>
+#include <wx/filename.h>
 #include <wx/sizer.h>
 #include <wx/uri.h>
 
@@ -152,7 +153,12 @@ void MainFrame::OnClose(wxCloseEvent &event) {
 void MainFrame::OnConnection(DBGp::ConnectionEvent &event) {
 	wxString expectedKey(config->Read(wxT("Network/IDEKey"), wxEmptyString));
 	if (expectedKey.Len() == 0 || expectedKey == event.GetIDEKey()) {
-		notebook->AddPage(new ConnectionPage(notebook, event.GetConnection(), event.GetFileURI(), event.GetLanguage()), wxURI::Unescape(wxURI(event.GetFileURI()).GetPath()), true);
+		wxFileName name(wxURI::Unescape(wxURI(event.GetFileURI()).GetPath()));
+		notebook->AddPage(new ConnectionPage(notebook, event.GetConnection(), event.GetFileURI(), event.GetLanguage()), name.GetFullName(), true);
+
+		if (!IsActive()) {
+			RequestUserAttention(wxUSER_ATTENTION_INFO);
+		}
 	}
 	else {
 		// TODO: Ponder how we want to notify the user of this. Indeed,
