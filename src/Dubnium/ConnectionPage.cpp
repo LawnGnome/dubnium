@@ -233,6 +233,15 @@ void ConnectionPage::OnStatusChange(DBGp::StatusChangeEvent &event) {
 		properties->SetStackLevel(NULL);
 		source->Unavailable(_("No source is available as execution has finished."));
 		unavailable = true;
+
+		if (event.GetStatus() == DBGp::Connection::STOPPING) {
+			/* In some cases, Apache won't send content to the user
+			 * until we actually put it in the stopped state, so
+			 * let's do that now -- Dubnium can't do anything
+			 * useful in the post-mortem stage regardless at the
+			 * moment. */
+			conn->Stop();
+		}
 	}
 }
 // }}}
