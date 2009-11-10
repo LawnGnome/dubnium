@@ -56,6 +56,7 @@ class BreakpointPanel : public ToolbarPanel {
 		void OnAddCall(wxCommandEvent &event);
 		void OnAddException(wxCommandEvent &event);
 		void OnAddReturn(wxCommandEvent &event);
+		void OnClickCell(wxGridEvent &event);
 		void OnRemove(wxCommandEvent &event);
 		void OnSelectCell(wxGridEvent &event);
 		void ResetGrid();

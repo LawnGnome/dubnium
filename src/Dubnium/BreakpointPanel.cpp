@@ -49,6 +49,7 @@ bool IsNotDisplayed(DBGp::Breakpoint *bp) {
 
 // {{{ Event table
 BEGIN_EVENT_TABLE(BreakpointPanel, wxPanel)
+	EVT_GRID_CMD_CELL_LEFT_CLICK(ID_BREAKPOINTPANEL_GRID, BreakpointPanel::OnClickCell)
 	EVT_GRID_CMD_SELECT_CELL(ID_BREAKPOINTPANEL_GRID, BreakpointPanel::OnSelectCell)
 	EVT_TOOL(ID_BREAKPOINTPANEL_ADD_CALL, BreakpointPanel::OnAddCall)
 	EVT_TOOL(ID_BREAKPOINTPANEL_ADD_EXCEPTION, BreakpointPanel::OnAddException)
@@ -202,38 +203,8 @@ void BreakpointPanel::OnAddReturn(wxCommandEvent &event) {
 	Update();
 }
 // }}}
-// {{{ void BreakpointPanel::OnRemove(wxCommandEvent &event)
-void BreakpointPanel::OnRemove(wxCommandEvent &event) {
-	DBGp::Connection *conn = parent->GetConnection();
-	wxArrayInt rows(grid->GetSelectedRows());
-
-	for (size_t i = 0; i < rows.GetCount(); i++) {
-		wxLogDebug(wxT("Attempting to remove breakpoint on row %d"), i);
-		wxString id(grid->GetRowLabelValue(rows.Item(i)));
-		DBGp::Breakpoint *bp = conn->GetBreakpoint(id);
-		
-		if (bp) {
-			try {
-				if (bp->GetType() == DBGp::Breakpoint::LINE) {
-					parent->BreakpointRemove(bp->GetFileName(), bp->GetLineNo());
-				}
-
-				conn->RemoveBreakpoint(bp);
-			}
-			catch (DBGp::Error e) {
-				wxLogDebug(wxT("Attempted to remove bad breakpoint %s."), id.c_str());
-			}
-		}
-	}
-	Update();
-}
-// }}}
-// {{{ void BreakpointPanel::OnSelectCell(wxGridEvent &event)
-void BreakpointPanel::OnSelectCell(wxGridEvent &event) {
-	grid->SelectRow(event.GetRow(), event.ControlDown());
-
-	/* If the sticky cell has been selected and it's something we can make
-	 * sticky, let's do so. */
+// {{{ void BreakpointPanel::OnClickCell(wxGridEvent &event)
+void BreakpointPanel::OnClickCell(wxGridEvent &event) {
 	if (event.GetCol() == 0) {
 		wxString id(grid->GetRowLabelValue(event.GetRow()));
 		DBGp::Connection *conn = parent->GetConnection();
@@ -266,6 +237,37 @@ void BreakpointPanel::OnSelectCell(wxGridEvent &event) {
 			}
 		}
 	}
+}
+// }}}
+// {{{ void BreakpointPanel::OnRemove(wxCommandEvent &event)
+void BreakpointPanel::OnRemove(wxCommandEvent &event) {
+	DBGp::Connection *conn = parent->GetConnection();
+	wxArrayInt rows(grid->GetSelectedRows());
+
+	for (size_t i = 0; i < rows.GetCount(); i++) {
+		wxLogDebug(wxT("Attempting to remove breakpoint on row %d"), i);
+		wxString id(grid->GetRowLabelValue(rows.Item(i)));
+		DBGp::Breakpoint *bp = conn->GetBreakpoint(id);
+		
+		if (bp) {
+			try {
+				if (bp->GetType() == DBGp::Breakpoint::LINE) {
+					parent->BreakpointRemove(bp->GetFileName(), bp->GetLineNo());
+				}
+
+				conn->RemoveBreakpoint(bp);
+			}
+			catch (DBGp::Error e) {
+				wxLogDebug(wxT("Attempted to remove bad breakpoint %s."), id.c_str());
+			}
+		}
+	}
+	Update();
+}
+// }}}
+// {{{ void BreakpointPanel::OnSelectCell(wxGridEvent &event)
+void BreakpointPanel::OnSelectCell(wxGridEvent &event) {
+	grid->SelectRow(event.GetRow(), event.ControlDown());
 }
 // }}}
 // {{{ void BreakpointPanel::ResetGrid()
