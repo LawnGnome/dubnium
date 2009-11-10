@@ -26,3 +26,5 @@ libDBGp = env.StaticLibrary(target="DBGp", source=[
 		])
 
 Return("libDBGp")
+
+# vim:set ts=8 sw=8 noet nocin ai ft=python:

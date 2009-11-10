@@ -16,3 +16,4 @@ env.Clean(prog, [
 		"TestApp.pdb"
 		])
 
+# vim:set ts=8 sw=8 noet nocin ai ft=python:

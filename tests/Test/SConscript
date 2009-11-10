@@ -8,3 +8,5 @@ libDBGpTest = env.StaticLibrary(target="libDBGpTest", source=[
 env.Alias("test", libDBGpTest)
 
 Return("libDBGpTest")
+
+# vim:set ts=8 sw=8 noet nocin ai ft=python:

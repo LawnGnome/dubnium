@@ -133,3 +133,5 @@ if platform.system() == "Darwin":
 	bundle = env.Command("%s/Dubnium.app" % buildDir, Dubnium, "buildsys/bundle.sh '%s' 'build/Dubnium.app'" % Dubnium[0])
 	env.Depends(bundle, Dubnium)
 	env.Default(bundle)
+
+# vim:set ts=8 sw=8 noet nocin ai ft=python:

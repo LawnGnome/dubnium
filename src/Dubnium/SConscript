@@ -46,3 +46,5 @@ env.Clean(prog, [
 )
 
 Return("prog")
+
+# vim:set ts=8 sw=8 noet nocin ai ft=python:

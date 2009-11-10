@@ -49,3 +49,5 @@ runTests = testEnv.Program("RunTests", [
 	]
 )
 testEnv.Alias("test", runTests)
+
+# vim:set ts=8 sw=8 noet nocin ai ft=python:

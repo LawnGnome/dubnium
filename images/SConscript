@@ -10,3 +10,5 @@ images = env.StaticLibrary(target="images", source=["images.cpp"])
 env.Depends(images, actions)
 
 Return("images")
+
+# vim:set ts=8 sw=8 noet nocin ai ft=python:
