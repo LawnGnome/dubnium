@@ -159,8 +159,11 @@ void ConnectionPage::CreateToolBar() {
 	toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
 	toolbar->SetToolBitmapSize(size);
 
+#if 0
 	toolbar->AddTool(ID_CONNECTIONPAGE_OPEN, _("Open"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, size), _("Open a source file"));
 	toolbar->AddSeparator();
+#endif
+
 	toolbar->AddTool(ID_CONNECTIONPAGE_RUN, _("Run"), wxArtProvider::GetBitmap(wxT("run"), wxART_TOOLBAR, size), _("Run"));
 	if (breakSupported) {
 		toolbar->AddTool(ID_CONNECTIONPAGE_BREAK, _("Break"), wxArtProvider::GetBitmap(wxT("break"), wxART_TOOLBAR, size), _("Break"));
