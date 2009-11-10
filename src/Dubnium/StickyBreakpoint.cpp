@@ -29,32 +29,21 @@
  */
 // }}}
 
-#ifndef DUBNIUM_H
-#define DUBNIUM_H
-
-#include <vector>
-#include <wx/app.h>
-
 #include "StickyBreakpoint.h"
 
-class Dubnium : public wxApp {
-	public:
-		virtual bool OnInit();
+#include <wx/log.h>
 
-		void AddStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp);
-		void AddStickyBreakpoint(const StickyBreakpoint &sb);
-		std::vector<StickyBreakpoint> GetStickyBreakpoints(const wxString &script) const;
-		bool IsStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp) const;
-		bool IsStickyBreakpoint(const StickyBreakpoint &sb) const;
-		void RemoveStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp);
-		void RemoveStickyBreakpoint(const StickyBreakpoint &search);
+// {{{ StickyBreakpoint::StickyBreakpoint(const wxString &script, DBGp::Breakpoint::Type type, const wxString &arg)
+StickyBreakpoint::StickyBreakpoint(const wxString &script, DBGp::Breakpoint::Type type, const wxString &arg) : arg(arg), script(script), type(type) {}
+// }}}
+// {{{ StickyBreakpoint::StickyBreakpoint(const StickyBreakpoint &sb)
+StickyBreakpoint::StickyBreakpoint(const StickyBreakpoint &sb) : arg(sb.arg), script(sb.script), type(sb.type) {}
+// }}}
 
-	protected:
-		std::vector<StickyBreakpoint> stickyBreakpoints;
-};
-
-DECLARE_APP(Dubnium)
-
-#endif
+// {{{ bool StickyBreakpoint::operator==(const StickyBreakpoint &sb) const
+bool StickyBreakpoint::operator==(const StickyBreakpoint &sb) const {
+	return (sb.arg == arg && sb.script == script && sb.type == type);
+}
+// }}}
 
 // vim:set fdm=marker ts=8 sw=8 noet cin:

@@ -31,6 +31,7 @@
 
 #include "ConnectionPage.h"
 #include "ArtProvider.h"
+#include "Dubnium.h"
 #include "PaneMenu.h"
 
 #include <wx/artprov.h>
@@ -54,7 +55,7 @@ END_EVENT_TABLE()
 // }}}
 
 // {{{ ConnectionPage::ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const wxString &fileURI, const wxString &language)
-ConnectionPage::ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const wxString &fileURI, const wxString &language) : wxPanel(parent, ID_CONNECTIONPAGE), conn(conn), language(language), level(level), unavailable(true) {
+ConnectionPage::ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const wxString &fileURI, const wxString &language) : wxPanel(parent, ID_CONNECTIONPAGE), conn(conn), language(language), level(level), script(fileURI), unavailable(true) {
 	config = wxConfigBase::Get();
 
 	conn->SetEventHandler(this);
@@ -88,6 +89,7 @@ ConnectionPage::ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const w
 #endif
 
 	mgr->Update();
+	RestoreStickyBreakpoints();
 }
 // }}}
 
@@ -254,6 +256,43 @@ void ConnectionPage::OnStepOut(wxCommandEvent &event) {
 // {{{ void ConnectionPage::OnStepOver(wxCommandEvent &event)
 void ConnectionPage::OnStepOver(wxCommandEvent &event) {
 	conn->StepOver();
+}
+// }}}
+// {{{ void ConnectionPage::RestoreStickyBreakpoints()
+void ConnectionPage::RestoreStickyBreakpoints() {
+	std::vector<StickyBreakpoint> breakpoints(wxGetApp().GetStickyBreakpoints(script));
+
+	wxLogDebug(wxT("Restoring sticky breakpoints for script %s..."), script.c_str());
+
+	for (std::vector<StickyBreakpoint>::iterator i = breakpoints.begin(); i != breakpoints.end(); i++) {
+		DBGp::Breakpoint *bp = conn->CreateBreakpoint();
+
+
+		switch (i->GetType()) {
+			case DBGp::Breakpoint::CALL:
+				wxLogDebug(wxT("Sticky breakpoint of CALL type: %s."), i->GetArgument().c_str());
+				bp->SetCallType(i->GetArgument());
+				break;
+
+			case DBGp::Breakpoint::EXCEPTION:
+				wxLogDebug(wxT("Sticky breakpoint of EXCEPTION type: %s."), i->GetArgument().c_str());
+				bp->SetExceptionType(i->GetArgument());
+				break;
+
+			case DBGp::Breakpoint::RETURN:
+				wxLogDebug(wxT("Sticky breakpoint of RETURN type: %s."), i->GetArgument().c_str());
+				bp->SetReturnType(i->GetArgument());
+				break;
+
+			default:
+				wxLogError(wxT("Sticky breakpoint of unknown type."));
+				break;
+		}
+
+		bp->Set();
+	}
+
+	breakpoint->Update();
 }
 // }}}
 // {{{ void ConnectionPage::SetSource(const wxString &file, int line)

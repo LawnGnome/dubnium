@@ -59,6 +59,7 @@ class ConnectionPage : public wxPanel, public SourceTextCtrlHandler {
 		inline wxString GetLastFile() const { return lastFile; }
 		virtual DBGp::Property *GetProperty(const wxString &name);
 		virtual wxString GetPropertyValue(const wxString &name) const;
+		inline wxString GetScript() const { return script; }
 		void SavePerspective();
 		void SetStackLevel(DBGp::StackLevel *level);
 
@@ -73,6 +74,7 @@ class ConnectionPage : public wxPanel, public SourceTextCtrlHandler {
 		wxAuiManager *mgr;
 		OutputPanel *output;
 		PropertiesPanel *properties;
+		wxString script;
 		SourcePanel *source;
 		StackPanel *stack;
 		wxToolBar *toolbar;
@@ -89,6 +91,7 @@ class ConnectionPage : public wxPanel, public SourceTextCtrlHandler {
 		void OnStepInto(wxCommandEvent &event);
 		void OnStepOut(wxCommandEvent &event);
 		void OnStepOver(wxCommandEvent &event);
+		void RestoreStickyBreakpoints();
 		void SetSource(const wxString &file, int line = -1);
 		void UpdateStack();
 		void UpdateToolBar(bool run, bool brk, bool stepInto, bool stepOver, bool stepOut);

@@ -1,5 +1,6 @@
 Version 0.2.0 (???)
 * Added support for setting class/object method breakpoints.
+* Added support for "sticky" breakpoints.
 * Changed the text on the property dialog button to OK.
 * Disabled the breakpoint panel after execution is complete.
 * Fixed segfault on close due to double call to wxSocketBase::Close().

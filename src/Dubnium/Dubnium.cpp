@@ -34,11 +34,14 @@
 #include "Config.h"
 #include "MainFrame.h"
 
+#include <algorithm>
+#include <stdexcept>
+
 #include <wx/gdicmn.h>
 #include <wx/image.h>
-#include <wx/sysopt.h>
-
+#include <wx/log.h>
 #include <wx/msgdlg.h>
+#include <wx/sysopt.h>
 
 // {{{ bool Dubnium::OnInit()
 bool Dubnium::OnInit() {
@@ -61,6 +64,95 @@ bool Dubnium::OnInit() {
 	frame->Show(true);
 	SetTopWindow(frame);
 	return true;
+}
+// }}}
+
+// {{{ StickyBreakpoint BreakpointToSticky(const wxString &script, const DBGp::Breakpoint *bp) throw (std::invalid_argument)
+StickyBreakpoint BreakpointToSticky(const wxString &script, const DBGp::Breakpoint *bp) throw (std::invalid_argument) {
+	if (bp) {
+		wxString arg;
+
+		switch (bp->GetType()) {
+			case DBGp::Breakpoint::CALL:
+			case DBGp::Breakpoint::RETURN:
+				arg = bp->GetFunction();
+				break;
+
+			case DBGp::Breakpoint::EXCEPTION:
+				arg = bp->GetException();
+				break;
+
+			default:
+				wxLogDebug(wxT("Bad breakpoint type: %s."), DBGp::Breakpoint::TypeToString(bp->GetType()).c_str());
+				throw std::invalid_argument("Bad breakpoint type");
+		}
+
+		return StickyBreakpoint(script, bp->GetType(), arg);
+}
+	else {
+		wxLogDebug(wxT("NULL breakpoint."));
+		throw std::invalid_argument("NULL breakpoint");
+	}
+}
+// }}}
+
+// {{{ void Dubnium::AddStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp)
+void Dubnium::AddStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp) {
+	try {
+		AddStickyBreakpoint(BreakpointToSticky(script, bp));
+	}
+	catch (std::invalid_argument e) {}
+}
+// }}}
+// {{{ void Dubnium::AddStickyBreakpoint(const StickyBreakpoint &sb)
+void Dubnium::AddStickyBreakpoint(const StickyBreakpoint &sb) {
+	wxLogDebug(wxT("Adding sticky breakpoint: script %s; type %s; argument %s."), sb.GetScript().c_str(), DBGp::Breakpoint::TypeToString(sb.GetType()).c_str(), sb.GetArgument().c_str());
+	stickyBreakpoints.push_back(sb);
+}
+// }}}
+// {{{ std::vector<StickyBreakpoint> Dubnium::GetStickyBreakpoints(const wxString &script) const
+std::vector<StickyBreakpoint> Dubnium::GetStickyBreakpoints(const wxString &script) const {
+	/* This isn't optimal, admittedly, but if you're using hundreds of
+	 * sticky breakpoints... */
+	std::vector<StickyBreakpoint> breakpoints;
+
+	for (std::vector<StickyBreakpoint>::const_iterator i = stickyBreakpoints.begin(); i != stickyBreakpoints.end(); i++) {
+		if (i->GetScript() == script) {
+			breakpoints.push_back(*i);
+		}
+	}
+
+	return breakpoints;
+}
+// }}}
+// {{{ bool Dubnium::IsStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp) const
+bool Dubnium::IsStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp) const {
+	try {
+		return IsStickyBreakpoint(BreakpointToSticky(script, bp));
+	}
+	catch (std::invalid_argument e) {
+		return false;
+	}
+}
+// }}}
+// {{{ bool Dubnium::IsStickyBreakpoint(const StickyBreakpoint &sb) const
+bool Dubnium::IsStickyBreakpoint(const StickyBreakpoint &sb) const {
+	return std::count(stickyBreakpoints.begin(), stickyBreakpoints.end(), sb);
+}
+// }}}
+// {{{ void Dubnium::RemoveStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp)
+void Dubnium::RemoveStickyBreakpoint(const wxString &script, const DBGp::Breakpoint *bp) {
+	try {
+		RemoveStickyBreakpoint(BreakpointToSticky(script, bp));
+	}
+	catch (std::invalid_argument e) {}
+}
+// }}}
+// {{{ void Dubnium::RemoveStickyBreakpoint(const StickyBreakpoint &sb) 
+void Dubnium::RemoveStickyBreakpoint(const StickyBreakpoint &sb) {
+	wxLogDebug(wxT("Removing sticky breakpoint: script %s; type %s; argument %s."), sb.GetScript().c_str(), DBGp::Breakpoint::TypeToString(sb.GetType()).c_str(), sb.GetArgument().c_str());
+	std::vector<StickyBreakpoint>::iterator end(std::remove(stickyBreakpoints.begin(), stickyBreakpoints.end(), sb));
+	stickyBreakpoints.erase(end, stickyBreakpoints.end());
 }
 // }}}
 

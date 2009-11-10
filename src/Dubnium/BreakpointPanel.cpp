@@ -31,6 +31,7 @@
 
 #include "BreakpointPanel.h"
 #include "ConnectionPage.h"
+#include "Dubnium.h"
 #include "FunctionBreakpointDialog.h"
 
 #include <algorithm>
@@ -110,7 +111,21 @@ void BreakpointPanel::Update() {
 	size_t row = 0;
 	for (DBGp::Connection::BreakpointList::iterator i = breakpoints.begin(); i != breakpoints.end(); i++, row++) {
 		wxString cond;
-		grid->SetCellValue(row, 0, DBGp::Breakpoint::TypeToString((*i)->GetType()));
+
+		switch ((*i)->GetType()) {
+			case DBGp::Breakpoint::CALL:
+			case DBGp::Breakpoint::RETURN:
+			case DBGp::Breakpoint::EXCEPTION:
+				grid->SetCellValue(row, 0, wxGetApp().IsStickyBreakpoint(parent->GetScript(), *i) ? wxT("1") : wxT("0"));
+				grid->SetCellAlignment(row, 0, wxALIGN_CENTRE, wxALIGN_CENTRE);
+				grid->SetCellRenderer(row, 0, new wxGridCellBoolRenderer);
+				break;
+
+			default:
+				break;
+		}
+
+		grid->SetCellValue(row, 1, DBGp::Breakpoint::TypeToString((*i)->GetType()));
 
 		switch ((*i)->GetType()) {
 			case DBGp::Breakpoint::CALL:
@@ -129,7 +144,7 @@ void BreakpointPanel::Update() {
 			default:
 				cond = wxT("???");
 		}
-		grid->SetCellValue(row, 1, cond);
+		grid->SetCellValue(row, 2, cond);
 		grid->SetRowLabelValue(row, (*i)->GetID());
 	}
 	grid->AutoSizeColumns();
@@ -216,16 +231,56 @@ void BreakpointPanel::OnRemove(wxCommandEvent &event) {
 // {{{ void BreakpointPanel::OnSelectCell(wxGridEvent &event)
 void BreakpointPanel::OnSelectCell(wxGridEvent &event) {
 	grid->SelectRow(event.GetRow(), event.ControlDown());
+
+	/* If the sticky cell has been selected and it's something we can make
+	 * sticky, let's do so. */
+	if (event.GetCol() == 0) {
+		wxString id(grid->GetRowLabelValue(event.GetRow()));
+		DBGp::Connection *conn = parent->GetConnection();
+		DBGp::Breakpoint *bp = conn->GetBreakpoint(id);
+
+		if (bp) {
+			switch (bp->GetType()) {
+				case DBGp::Breakpoint::CALL:
+				case DBGp::Breakpoint::RETURN:
+				case DBGp::Breakpoint::EXCEPTION:
+					{
+						bool isSticky = (grid->GetCellValue(event.GetRow(), event.GetCol()) != wxT("0"));
+						wxString cellValue(wxT("0"));
+
+						if (isSticky) {
+							wxGetApp().RemoveStickyBreakpoint(parent->GetScript(), bp);
+						}
+						else {
+							wxGetApp().AddStickyBreakpoint(parent->GetScript(), bp);
+							cellValue = wxT("1");
+						}
+						
+						grid->SetCellValue(event.GetRow(), 0, cellValue);
+
+						break;
+					}
+
+				default:
+					wxLogDebug(wxT("Breakpoint type does not support stickiness."));
+			}
+		}
+	}
 }
 // }}}
 // {{{ void BreakpointPanel::ResetGrid()
 void BreakpointPanel::ResetGrid() {
 	grid->Freeze();
 
-	grid->CreateGrid(1, 2);
+	grid->CreateGrid(1, 3);
 
-	grid->SetColLabelValue(0, _("Type"));
-	grid->SetColLabelValue(1, _("Condition"));
+	grid->SetColLabelValue(0, _("Sticky"));
+	grid->SetColLabelValue(1, _("Type"));
+	grid->SetColLabelValue(2, _("Condition"));
+
+#ifndef DUBNIUM_DEBUG
+	grid->SetRowLabelSize(0);
+#endif
 
 	grid->Thaw();
 }
