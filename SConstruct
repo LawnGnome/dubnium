@@ -139,7 +139,7 @@ else:
 	conf.Finish()
 
 	# Install prefix handling. By default, we'll use /usr/local.
-	prefix = ARGUMENTS.get("prefix", "/usr/local")
+	prefix = ARGUMENTS.get("PREFIX", "/usr/local")
 	env.Append(CXXFLAGS = " -DPREFIX=\\\"%s\\\" " % prefix)
 
 	# First compile the library, then the binaries in this directory that
