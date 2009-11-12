@@ -61,6 +61,7 @@ class SourceTextCtrl : public wxStyledTextCtrl {
 		int current;
 		SourceTextCtrlHandler *handler;
 		int menuPos;
+		bool menuShown;
 		wxString source;
 		wxTipWindow *tipWindow;
 
@@ -70,11 +71,13 @@ class SourceTextCtrl : public wxStyledTextCtrl {
 			MARKER_CURRENT
 		};
 
+		DBGp::Property *GetPropertyAtPosition(int pos);
 		void OnContextMenu(wxContextMenuEvent &event);
 		void OnCopy(wxCommandEvent &event);
 		void OnDoubleClick(wxMouseEvent &event);
 		void OnDwellEnd(wxStyledTextEvent &event);
 		void OnDwellStart(wxStyledTextEvent &event);
+		void OnExamineValue(wxCommandEvent &event);
 		void OnMarginClick(wxStyledTextEvent &event);
 		void OnRunToHere(wxCommandEvent &event);
 		void OnSelectAll(wxCommandEvent &event);

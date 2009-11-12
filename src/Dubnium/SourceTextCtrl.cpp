@@ -29,6 +29,7 @@
  */
 // }}}
 
+#include "PropertyDialog.h"
 #include "SourceTextCtrl.h"
 #include "Languages.h"
 
@@ -49,6 +50,7 @@ BEGIN_EVENT_TABLE(SourceTextCtrl, wxStyledTextCtrl)
 	EVT_LEFT_DCLICK(SourceTextCtrl::OnDoubleClick)
 	EVT_MENU(wxID_COPY, SourceTextCtrl::OnCopy)
 	EVT_MENU(wxID_SELECTALL, SourceTextCtrl::OnSelectAll)
+	EVT_MENU(ID_SOURCETEXTCTRL_EXAMINE_VALUE, SourceTextCtrl::OnExamineValue)
 	EVT_MENU(ID_SOURCETEXTCTRL_RUN_TO_HERE, SourceTextCtrl::OnRunToHere)
 	EVT_MENU(ID_SOURCETEXTCTRL_TOGGLE_BREAKPOINT, SourceTextCtrl::OnToggleBreakpoint)
 	EVT_STC_DWELLEND(wxID_ANY, SourceTextCtrl::OnDwellEnd)
@@ -58,7 +60,7 @@ END_EVENT_TABLE()
 // }}}
 
 // {{{ SourceTextCtrl::SourceTextCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name)
-SourceTextCtrl::SourceTextCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name) : wxStyledTextCtrl(parent, id, pos, size, style, name), menuPos(wxSTC_INVALID_POSITION), tipWindow(NULL) {
+SourceTextCtrl::SourceTextCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name) : wxStyledTextCtrl(parent, id, pos, size, style, name), menuPos(wxSTC_INVALID_POSITION), menuShown(false), tipWindow(NULL) {
 	config = wxConfigBase::Get();
 	handler = dynamic_cast<SourceTextCtrlHandler *>(parent);
 
@@ -173,6 +175,34 @@ void SourceTextCtrl::SetSource(const wxString &source, int line) {
 }
 // }}}
 
+// {{{ DBGp::Property *SourceTextCtrl::GetPropertyAtPosition(const wxPosition &pos)
+DBGp::Property *SourceTextCtrl::GetPropertyAtPosition(int pos) {
+	if (pos != wxSTC_INVALID_POSITION && handler) {
+		/* We need to pull out the individual token for the variable
+		 * under the mouse, if any. */
+		int line = LineFromPosition(pos);
+		int col = pos - PositionFromLine(line);
+		wxString name(GetLine(line));
+		size_t pos;
+		// TODO: This should be language specific.
+		static const wxString varChars(wxT("abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_->.$[]'"));
+
+		pos = name.find_first_not_of(varChars, col);
+		if (pos != std::string::npos) {
+			name = name.Left(pos);
+		}
+
+		pos = name.find_last_not_of(varChars);
+		if (pos != std::string::npos && pos < name.Length()) {
+			name = name.Mid(pos + 1);
+		}
+
+		return handler->GetProperty(name);
+	}
+
+	return NULL;
+}
+// }}}
 // {{{ void SourceTextCtrl::OnCopy(wxCommandEvent &event)
 void SourceTextCtrl::OnCopy(wxCommandEvent &event) {
 	Copy();
@@ -190,14 +220,22 @@ void SourceTextCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	menu.Append(wxID_SELECTALL);
 
 	if (menuPos != wxSTC_INVALID_POSITION) {
+		DBGp::Property *prop = GetPropertyAtPosition(menuPos);
+
 		menu.AppendSeparator();
+
+		if (prop) {
+			menu.Append(ID_SOURCETEXTCTRL_EXAMINE_VALUE, _("E&xamine Value"));
+		}
 		menu.Append(ID_SOURCETEXTCTRL_RUN_TO_HERE, _("&Run to Here"));
 		if (handler) {
 			menu.Append(ID_SOURCETEXTCTRL_TOGGLE_BREAKPOINT, _("Toggle &Breakpoint"));
 		}
 	}
 
+	menuShown = true;
 	PopupMenu(&menu);
+	menuShown = false;
 }
 // }}}
 // {{{ void SourceTextCtrl::OnDoubleClick(wxMouseEvent &event)
@@ -219,57 +257,53 @@ void SourceTextCtrl::OnDwellEnd(wxStyledTextEvent &event) {
 // }}}
 // {{{ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event)
 void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
-	int pos = event.GetPosition();
-	if (pos != wxSTC_INVALID_POSITION) {
-		/* We need to pull out the individual token for the variable
-		 * under the mouse, if any. */
-		int line = LineFromPosition(pos);
-		int col = pos - PositionFromLine(line);
-		wxString name(GetLine(line));
-		size_t pos;
-		// TODO: This should be language specific.
-		static const wxString varChars(wxT("abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_->.$[]'"));
+	/* If we're showing a context menu, we don't want this to fire at all,
+	 * so we'll save a roundtrip back to the debugging engine and get out
+	 * now. */
+	if (menuShown) {
+		return;
+	}
 
-		pos = name.find_first_not_of(varChars, col);
-		if (pos != std::string::npos) {
-			name = name.Left(pos);
-		}
+	DBGp::Property *prop = GetPropertyAtPosition(event.GetPosition());
 
-		pos = name.find_last_not_of(varChars);
-		if (pos != std::string::npos && pos < name.Length()) {
-			name = name.Mid(pos + 1);
-		}
+	if (prop) {
+		wxString text;
 
-		DBGp::Property *prop = handler->GetProperty(name);
-		if (prop) {
-			wxString text;
+		text << prop->GetFullName() << wxT(" (") << prop->GetType().GetName() << wxT(") : ");
 
-			text << name << wxT(" (") << prop->GetType().GetName() << wxT(") : ");
-
-			if (prop->HasChildren()) {
-				/* We'll do a shallow dump. People can look at
-				 * the properties panel and dialog (or the
-				 * context menu I, er, haven't implemented yet)
-				 * if they want detailed information. */
-				const DBGp::Property::PropertyMap children = prop->GetChildren();
-				for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
-					DBGp::Property *child = i->second;
-					text << wxT("\n") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
-					if (child->HasChildren()) {
-						text << _("<complex data structure>");
-					}
-					else {
-						text << child->GetData();
-					}
+		if (prop->HasChildren()) {
+			/* We'll do a shallow dump. People can look at
+			 * the properties panel and dialog (or the
+			 * context menu I, er, haven't implemented yet)
+			 * if they want detailed information. */
+			const DBGp::Property::PropertyMap children = prop->GetChildren();
+			for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
+				DBGp::Property *child = i->second;
+				text << wxT("\n") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
+				if (child->HasChildren()) {
+					text << _("<complex data structure>");
+				}
+				else {
+					text << child->GetData();
 				}
 			}
-			else {
-				text << prop->GetData();
-			}
-
-			tipWindow = new wxTipWindow(this, text, 640, &tipWindow);
-			tipWindow->SetBoundingRect(wxRect(-1, -1, -1, -1));
 		}
+		else {
+			text << prop->GetData();
+		}
+
+		tipWindow = new wxTipWindow(this, text, 640, &tipWindow);
+		tipWindow->SetBoundingRect(wxRect(-1, -1, -1, -1));
+	}
+}
+// }}}
+// {{{ void SourceTextCtrl::OnExamineValue(wxCommandEvent &event)
+void SourceTextCtrl::OnExamineValue(wxCommandEvent &event) {
+	DBGp::Property *prop = GetPropertyAtPosition(menuPos);
+	
+	if (prop) {
+		PropertyDialog pd(this, wxID_ANY, prop);
+		pd.ShowModal();
 	}
 }
 // }}}

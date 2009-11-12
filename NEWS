@@ -1,4 +1,5 @@
 Version 0.2.0 (???)
+* Added an Examine Value item to the main context menu.
 * Added (very) basic watch breakpoint support and implemented support for the breakpoint_types call to dynamically populate the breakpoint panel toolbar.
 * Added support for setting class/object method breakpoints.
 * Added support for "sticky" breakpoints.
