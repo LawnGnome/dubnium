@@ -46,6 +46,7 @@
 #include "step-into.png.data.c"
 #include "step-out.png.data.c"
 #include "step-over.png.data.c"
+#include "watch.png.data.c"
 
 static Images::Image knownImages[] = {
 	{wxT("break"), break_png, sizeof(break_png)},
@@ -63,6 +64,7 @@ static Images::Image knownImages[] = {
 	{wxT("step-into"), step_into_png, sizeof(step_into_png)},
 	{wxT("step-out"), step_out_png, sizeof(step_out_png)},
 	{wxT("step-over"), step_over_png, sizeof(step_over_png)},
+	{wxT("watch"), watch_png, sizeof(watch_png)},
 	{NULL, NULL}
 };
 

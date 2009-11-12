@@ -36,9 +36,11 @@
 
 #include <algorithm>
 
+#include <wx/arrstr.h>
 #include <wx/artprov.h>
 #include <wx/log.h>
 #include <wx/textdlg.h>
+#include <wx/tokenzr.h>
 
 // {{{ bool IsNotDisplayed(DBGp::Breakpoint *bp)
 bool IsNotDisplayed(DBGp::Breakpoint *bp) {
@@ -54,16 +56,65 @@ BEGIN_EVENT_TABLE(BreakpointPanel, wxPanel)
 	EVT_TOOL(ID_BREAKPOINTPANEL_ADD_CALL, BreakpointPanel::OnAddCall)
 	EVT_TOOL(ID_BREAKPOINTPANEL_ADD_EXCEPTION, BreakpointPanel::OnAddException)
 	EVT_TOOL(ID_BREAKPOINTPANEL_ADD_RETURN, BreakpointPanel::OnAddReturn)
+	EVT_TOOL(ID_BREAKPOINTPANEL_ADD_WATCH, BreakpointPanel::OnAddWatch)
 	EVT_TOOL(ID_BREAKPOINTPANEL_REMOVE, BreakpointPanel::OnRemove)
 END_EVENT_TABLE()
 // }}}
 
 // {{{ BreakpointPanel::BreakpointPanel(ConnectionPage *parent, wxWindowID id)
 BreakpointPanel::BreakpointPanel(ConnectionPage *parent, wxWindowID id) : ToolbarPanel(parent, id), breakpoints(parent->GetConnection()->GetBreakpoints()) {
-	toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_CALL, _("Add Function Call Breakpoint"), wxArtProvider::GetBitmap(wxT("breakpoint-function"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by a function call"));
-	toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_RETURN, _("Add Function Return Breakpoint"), wxArtProvider::GetBitmap(wxT("breakpoint-return"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by a function return"));
-	toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_EXCEPTION, _("Add Exception Breakpoint"), wxArtProvider::GetBitmap(wxT("breakpoint-exception"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by an exception being thrown"));
-	toolbar->AddSeparator();
+	// Retrieve the breakpoint types that the debugging engine supports.
+	wxSortedArrayString types;
+	try {
+		DBGp::Connection *conn = parent->GetConnection();
+		wxString typeString(conn->FeatureGet(wxT("breakpoint_types")));
+
+		// Work around for XDebug bug #486.
+		if (typeString == wxT("line call return") && conn->FeatureGet(wxT("language_name")) == wxT("PHP")) {
+			/* This is a workaround for XDebug bug #486; current
+			 * versions of XDebug always return "line call return",
+			 * which isn't actually true. */
+			types.Add(wxT("line"));
+			types.Add(wxT("call"));
+			types.Add(wxT("return"));
+			types.Add(wxT("conditional"));
+			types.Add(wxT("exception"));
+		}
+		else {
+			/* For other setups, we'll believe what the debugging
+			 * engine actually tells us. */
+			wxStringTokenizer tkz(typeString);
+			
+			for (wxString type(tkz.GetNextToken()); tkz.HasMoreTokens(); type = tkz.GetNextToken()) {
+				types.Add(type);
+			}
+		}
+	}
+	catch (...) {
+		// We'll proceed, just without any toolbar buttons bar remove.
+		wxLogDebug(wxT("Getting breakpoint_types failed; proceeding without breakpoint support."));
+	}
+
+	if (types.Index(wxT("call")) != wxNOT_FOUND) {
+		toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_CALL, _("Add Function Call Breakpoint"), wxArtProvider::GetBitmap(wxT("breakpoint-function"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by a function call"));
+	}
+
+	if (types.Index(wxT("return")) != wxNOT_FOUND) {
+		toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_RETURN, _("Add Function Return Breakpoint"), wxArtProvider::GetBitmap(wxT("breakpoint-return"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by a function return"));
+	}
+
+	if (types.Index(wxT("exception")) != wxNOT_FOUND) {
+		toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_EXCEPTION, _("Add Exception Breakpoint"), wxArtProvider::GetBitmap(wxT("breakpoint-exception"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by an exception being thrown"));
+	}
+
+	if (types.Index(wxT("watch")) != wxNOT_FOUND) {
+		toolbar->AddTool(ID_BREAKPOINTPANEL_ADD_WATCH, _("Add Watch Breakpoint"), wxArtProvider::GetBitmap(wxT("watch"), wxART_TOOLBAR, size), _("Add a breakpoint triggered by the value of a watched variable changing"));
+	}
+
+	if (types.GetCount()) {
+		toolbar->AddSeparator();
+	}
+
 	toolbar->AddTool(ID_BREAKPOINTPANEL_REMOVE, _("Remove Breakpoint"), wxArtProvider::GetBitmap(wxART_DELETE, wxART_TOOLBAR, size), _("Remove the selected breakpoint"));
 	toolbar->Realize();
 
@@ -200,6 +251,17 @@ void BreakpointPanel::OnAddReturn(wxCommandEvent &event) {
 		bp->Set();
 	}
 
+	Update();
+}
+// }}}
+// {{{ void BreakpointPanel::OnAddWatch(wxCommandEvent &event)
+void BreakpointPanel::OnAddWatch(wxCommandEvent &event) {
+	wxString watch(wxGetTextFromUser(_("Please enter the variable to watch:"), _("Add Watch Breakpoint"), wxEmptyString, this));
+	if (watch != wxEmptyString) {
+		DBGp::Breakpoint *bp = parent->GetConnection()->CreateBreakpoint();
+		bp->SetWatchType(watch);
+		bp->Set();
+	}
 	Update();
 }
 // }}}
