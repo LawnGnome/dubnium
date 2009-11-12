@@ -279,7 +279,7 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 			const DBGp::Property::PropertyMap children = prop->GetChildren();
 			for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
 				DBGp::Property *child = i->second;
-				text << wxT("\n") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
+				text << wxT("\n\t") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
 				if (child->HasChildren()) {
 					text << _("<complex data structure>");
 				}
