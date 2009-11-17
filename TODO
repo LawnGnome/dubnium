@@ -1,5 +1,7 @@
 Version 0.2.0
 * Improve property display.
+* Only show a certain number of property children in the tooltip.
+* Investigate "Run to Here" not removing temporary breakpoints after they're hit.
 
 
 Version 0.2.x
