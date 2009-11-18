@@ -277,6 +277,8 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 			 * context menu I, er, haven't implemented yet)
 			 * if they want detailed information. */
 			const DBGp::Property::PropertyMap children = prop->GetChildren();
+			int numShown = 0;
+
 			for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
 				DBGp::Property *child = i->second;
 				text << wxT("\n\t") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
@@ -285,6 +287,16 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 				}
 				else {
 					text << child->GetData();
+				}
+
+				// We'll truncate at an arbitrarily chosen 20 elements.
+				if (++numShown >= 20) {
+					wxString rem;
+
+					rem.Printf(_("<remaining %d element(s) omitted>"), children.size() - 20);
+					text << wxT("\n") << rem;
+
+					break;
 				}
 			}
 		}

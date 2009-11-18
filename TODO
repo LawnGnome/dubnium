@@ -1,8 +1,3 @@
-Version 0.2.0
-* Improve property display.
-* Only show a certain number of property children in the tooltip.
-
-
 Version 0.2.x
 * Allow server port changes to take effect without restarting.
 * Bug fixes arising from 0.2.0.
