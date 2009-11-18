@@ -302,6 +302,13 @@ namespace DBGp {
 			 *
 			 * @return The list of breakpoints.
 			 */
+			BreakpointList &GetBreakpoints();
+
+			/**
+			 * Returns the entire list of breakpoints.
+			 *
+			 * @return The list of breakpoints.
+			 */
 			const BreakpointList &GetBreakpoints() const;
 
 			/**

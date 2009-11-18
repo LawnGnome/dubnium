@@ -96,16 +96,43 @@ ConnectionPage::ConnectionPage(wxWindow *parent, DBGp::Connection *conn, const w
 // {{{ void ConnectionPage::BreakpointAdd(int line, bool temporary)
 void ConnectionPage::BreakpointAdd(int line, bool temporary) {
 	if (!unavailable) {
+		DBGp::Connection::BreakpointList disabledBreakpoints;
 		DBGp::Breakpoint *bp = conn->CreateBreakpoint();
 
 		bp->SetLineType(lastFile, line);
+
+		/* In the normal course of events, we'd use DBGp's temporary
+		 * breakpoint support here, which requires one method call to
+		 * DBGp::Breakpoint. Unfortunately, XDebug doesn't support
+		 * this, so instead we'll hack it -- disable all breakpoints,
+		 * run, then re-enable all breakpoints. */
 		if (temporary) {
-			bp->SetTemporary(true);
+			if (language == wxT("PHP")) {
+				DBGp::Connection::BreakpointList &breakpoints = conn->GetBreakpoints();
+
+				for (DBGp::Connection::BreakpointList::iterator i = breakpoints.begin(); i != breakpoints.end(); i++) {
+					DBGp::Breakpoint *point = *i;
+					if (point && point != bp && point->GetID() != wxEmptyString && point->IsEnabled()) {
+						point->Disable();
+						disabledBreakpoints.push_back(point);
+					}
+				}
+			}
+			else {
+				bp->SetTemporary(true);
+			}
 		}
 		bp->Set();
 
 		if (temporary) {
 			conn->Run();
+
+			if (language == wxT("PHP")) {
+				for (DBGp::Connection::BreakpointList::iterator i = disabledBreakpoints.begin(); i != disabledBreakpoints.end(); i++) {
+					(*i)->Enable();
+				}
+				conn->RemoveBreakpoint(bp);
+			}
 		}
 		else {
 			breakpoint->Update();

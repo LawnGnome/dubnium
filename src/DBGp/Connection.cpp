@@ -261,6 +261,11 @@ Breakpoint *Connection::GetBreakpoint(const wxString &id) {
 	return NULL;
 }
 // }}}
+// {{{ Connection::BreakpointList &Connection::GetBreakpoints()
+Connection::BreakpointList &Connection::GetBreakpoints() {
+	return breakpoints;
+}
+// }}}
 // {{{ const Connection::BreakpointList &Connection::GetBreakpoints() const
 const Connection::BreakpointList &Connection::GetBreakpoints() const {
 	return breakpoints;
