@@ -8,6 +8,7 @@ Version 0.3.0
 * Change fonts in existing SourceTextCtrl instances when changed in the
   options.
 * Make the preferences dialog not suck.
+* On-demand property retrieval.
 * Perspective load/save code that doesn't crash. (This requires wxAUI events on
   resizes, which may or may not work at the moment. 2.8.10 at least seems to
   not crash.)
