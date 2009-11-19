@@ -44,6 +44,22 @@
 
 using namespace Languages;
 
+// {{{ wxString TruncateValue(const wxString &value, size_t maxLength = 60)
+wxString TruncateValue(const wxString &value, size_t maxLength = 60) {
+	if (value.Len() > maxLength) {
+		wxString truncatedValue(value.Left(maxLength));
+		wxString remaining;
+
+		remaining.Printf(_("<remaining %u character(s) omitted>"), value.Len() - maxLength);
+		truncatedValue << wxT("... ") << remaining;
+
+		return truncatedValue;
+	}
+
+	return value;
+}
+// }}}
+
 // {{{ Event table
 BEGIN_EVENT_TABLE(SourceTextCtrl, wxStyledTextCtrl)
 	EVT_CONTEXT_MENU(SourceTextCtrl::OnContextMenu)
@@ -272,10 +288,9 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 		text << prop->GetFullName() << wxT(" (") << prop->GetType().GetName() << wxT(") : ");
 
 		if (prop->HasChildren()) {
-			/* We'll do a shallow dump. People can look at
-			 * the properties panel and dialog (or the
-			 * context menu I, er, haven't implemented yet)
-			 * if they want detailed information. */
+			/* We'll do a shallow dump, since detailed information
+			 * is available through the properties panel and
+			 * context menu. */
 			const DBGp::Property::PropertyMap children = prop->GetChildren();
 			int numShown = 0;
 
@@ -286,7 +301,7 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 					text << _("<complex data structure>");
 				}
 				else {
-					text << child->GetData();
+					text << TruncateValue(child->GetData());
 				}
 
 				// We'll truncate at an arbitrarily chosen 20 elements.
@@ -301,7 +316,7 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 			}
 		}
 		else {
-			text << prop->GetData();
+			text << TruncateValue(prop->GetData());
 		}
 
 		tipWindow = new wxTipWindow(this, text, 640, &tipWindow);
