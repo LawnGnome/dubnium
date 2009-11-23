@@ -30,6 +30,7 @@
 // }}}
 
 #include "PropertyDialog.h"
+#include "PropertyTipWindow.h"
 #include "SourceTextCtrl.h"
 #include "Languages.h"
 
@@ -38,27 +39,10 @@
 
 #include <wx/artprov.h>
 #include <wx/log.h>
-#include <wx/tipwin.h>
 
 #include "ID.h"
 
 using namespace Languages;
-
-// {{{ wxString TruncateValue(const wxString &value, size_t maxLength = 60)
-wxString TruncateValue(const wxString &value, size_t maxLength = 60) {
-	if (value.Len() > maxLength) {
-		wxString truncatedValue(value.Left(maxLength));
-		wxString remaining;
-
-		remaining.Printf(_("<remaining %u character(s) omitted>"), value.Len() - maxLength);
-		truncatedValue << wxT("... ") << remaining;
-
-		return truncatedValue;
-	}
-
-	return value;
-}
-// }}}
 
 // {{{ Event table
 BEGIN_EVENT_TABLE(SourceTextCtrl, wxStyledTextCtrl)
@@ -283,44 +267,8 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 	DBGp::Property *prop = GetPropertyAtPosition(event.GetPosition());
 
 	if (prop) {
-		wxString text;
-
-		text << prop->GetFullName() << wxT(" (") << prop->GetType().GetName() << wxT(") : ");
-
-		if (prop->HasChildren()) {
-			/* We'll do a shallow dump, since detailed information
-			 * is available through the properties panel and
-			 * context menu. */
-			const DBGp::Property::PropertyMap children = prop->GetChildren();
-			int numShown = 0;
-
-			for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
-				DBGp::Property *child = i->second;
-				text << wxT("\n\t") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
-				if (child->HasChildren()) {
-					text << _("<complex data structure>");
-				}
-				else {
-					text << TruncateValue(child->GetData());
-				}
-
-				// We'll truncate at an arbitrarily chosen 20 elements.
-				if (++numShown >= 20) {
-					wxString rem;
-
-					rem.Printf(_("<remaining %d element(s) omitted>"), children.size() - 20);
-					text << wxT("\n") << rem;
-
-					break;
-				}
-			}
-		}
-		else {
-			text << TruncateValue(prop->GetData());
-		}
-
-		tipWindow = new wxTipWindow(this, text, 640, &tipWindow);
-		tipWindow->SetBoundingRect(wxRect(-1, -1, -1, -1));
+		PropertyTipWindow *tip = new PropertyTipWindow(this, prop);
+		tip->Popup();
 	}
 }
 // }}}

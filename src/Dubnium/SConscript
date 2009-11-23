@@ -15,6 +15,7 @@ source = [
 	"PrefDialog.cpp",
 	"PropertiesPanel.cpp",
 	"PropertyDialog.cpp",
+	"PropertyTipWindow.cpp",
 	"PropertyTreeItem.cpp",
 	"SourcePanel.cpp",
 	"SourceTextCtrl.cpp",
