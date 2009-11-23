@@ -63,7 +63,6 @@ class SourceTextCtrl : public wxStyledTextCtrl {
 		int menuPos;
 		bool menuShown;
 		wxString source;
-		wxTipWindow *tipWindow;
 
 		enum {
 			MARKER_ALL = -1,
@@ -75,7 +74,6 @@ class SourceTextCtrl : public wxStyledTextCtrl {
 		void OnContextMenu(wxContextMenuEvent &event);
 		void OnCopy(wxCommandEvent &event);
 		void OnDoubleClick(wxMouseEvent &event);
-		void OnDwellEnd(wxStyledTextEvent &event);
 		void OnDwellStart(wxStyledTextEvent &event);
 		void OnExamineValue(wxCommandEvent &event);
 		void OnMarginClick(wxStyledTextEvent &event);

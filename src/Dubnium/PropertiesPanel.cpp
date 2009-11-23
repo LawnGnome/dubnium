@@ -43,7 +43,7 @@ END_EVENT_TABLE()
 // }}}
 
 // {{{ PropertiesPanel::PropertiesPanel(ConnectionPage *parent, wxWindowID id)
-PropertiesPanel::PropertiesPanel(ConnectionPage *parent, wxWindowID id) : ToolbarPanel(parent, id), toolTip(this, this, wxID_ANY) {
+PropertiesPanel::PropertiesPanel(ConnectionPage *parent, wxWindowID id) : ToolbarPanel(parent, id) {
 	tree = new wxTreeCtrl(this, ID_PROPERTIESPANEL_TREE, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS | wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
 	sizer->Add(tree, 1, wxEXPAND | wxALL);
 }
@@ -63,26 +63,6 @@ wxString PropertiesPanel::GetPropertyValue(const wxString &name) const {
 		return properties.find(name)->second->GetData();
 	}
 	return wxEmptyString;
-}
-// }}}
-// {{{ wxString PropertiesPanel::GetTipText(const wxPoint &mousePos)
-wxString PropertiesPanel::GetTipText(const wxPoint &mousePos) {
-	int flags = 0;
-	wxPoint pos(mousePos - tree->GetPosition());
-	wxTreeItemId id(tree->HitTest(pos, flags));
-	wxString text;
-
-	if (id && ~(flags & wxTREE_HITTEST_NOWHERE)) {
-		PropertyTreeItem *item = dynamic_cast<PropertyTreeItem *>(tree->GetItemData(id));
-		if (item) {
-			DBGp::Property *prop = item->GetProperty();
-			if (!prop->HasChildren()) {
-				text << prop->GetName() << wxT(" : ") << prop->GetData();
-			}
-		}
-	}
-
-	return text;
 }
 // }}}
 // {{{ void PropertiesPanel::SetStackLevel(DBGp::StackLevel *level)

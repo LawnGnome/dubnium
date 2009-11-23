@@ -7,6 +7,7 @@ source = [
 	"BreakpointPanel.cpp",
 	"ConnectionPage.cpp",
 	"DebugPage.cpp",
+	"Dwell.cpp",
 	"FunctionBreakpointDialog.cpp",
 	"Location.cpp",
 	"MainFrame.cpp",
@@ -23,7 +24,6 @@ source = [
 	"StackPanel.cpp",
 	"StickyBreakpoint.cpp",
 	"ToolbarPanel.cpp",
-	"ToolTipWindow.cpp",
 	"WelcomePage.cpp",
 	"Dubnium.cpp",
 	libDBGp

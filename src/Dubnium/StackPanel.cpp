@@ -40,15 +40,26 @@ END_EVENT_TABLE()
 // }}}
 
 // {{{ StackPanel::StackPanel(ConnectionPage *parent, wxWindowID id)
-StackPanel::StackPanel(ConnectionPage *parent, wxWindowID id) : ToolbarPanel(parent, id), ToolTipProvider(), toolTip(this, this, ID_STACKPANEL_TOOLTIP) {
+StackPanel::StackPanel(ConnectionPage *parent, wxWindowID id) : ToolbarPanel(parent, id) {
 	list = new wxListBox(this, ID_STACKPANEL_LIST, wxDefaultPosition, wxDefaultSize, wxArrayString(), wxLB_SINGLE);
 	sizer->Add(list, 1, wxEXPAND | wxALL);
+
+	PushEventHandler(new Dwell(this));
+}
+// }}}
+// {{{ StackPanel::~StackPanel()
+StackPanel::~StackPanel() {
+	PopEventHandler(true);
 }
 // }}}
 
-// {{{ wxString StackPanel::GetTipText(const wxPoint &mousePos)
-wxString StackPanel::GetTipText(const wxPoint &mousePos) {
-	return wxEmptyString;
+// {{{ void StackPanel::OnDwell(const wxPoint &pos)
+void StackPanel::OnDwell(const wxPoint &pos) {
+	int item = HitTest(pos);
+
+	if (item != wxNOT_FOUND && item < static_cast<int>(list->GetCount())) {
+		wxLogDebug(wxT("Dwelling with text: %s"), list->GetString(item).c_str());
+	}
 }
 // }}}
 // {{{ void StackPanel::SetStack(DBGp::Stack *stack)

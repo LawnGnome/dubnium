@@ -29,34 +29,33 @@
  */
 // }}}
 
-#ifndef DUBNIUM_STACKPANEL_H
-#define DUBNIUM_STACKPANEL_H
+#ifndef DUBNIUM_DWELL_H
+#define DUBNIUM_DWELL_H
 
-#include <wx/listbox.h>
+#include <wx/event.h>
+#include <wx/gdicmn.h>
+#include <wx/timer.h>
 
-#include "DBGp/Stack.h"
-
-#include "Dwell.h"
-#include "ID.h"
-#include "PropertiesPanel.h"
-#include "ToolbarPanel.h"
-
-class ConnectionPage;
-
-class StackPanel : public ToolbarPanel, public DwellHandler {
+class DwellHandler {
 	public:
-		StackPanel(ConnectionPage *parent, wxWindowID id = wxID_ANY);
-		virtual ~StackPanel();
+		virtual void OnDwell(const wxPoint &pos) = 0;
+};
 
-		virtual void OnDwell(const wxPoint &pos);		
-		void SetStack(DBGp::Stack *stack);
+class Dwell : public wxEvtHandler {
+	public:
+		Dwell(DwellHandler *handler);
+		virtual ~Dwell();
 
 	protected:
-		wxListBox *list;
+		void ConnectEvents();
+		void OnEnter(wxMouseEvent &event);
+		void OnLeave(wxMouseEvent &event);
+		void OnMotion(wxMouseEvent &event);
+		void OnTimer(wxTimerEvent &event);
 
-		void OnListBox(wxCommandEvent &event);
-
-		DECLARE_EVENT_TABLE()
+		DwellHandler *handler;
+		wxPoint *lastPosition;
+		wxTimer *timer;
 };
 
 #endif

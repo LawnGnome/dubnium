@@ -53,14 +53,13 @@ BEGIN_EVENT_TABLE(SourceTextCtrl, wxStyledTextCtrl)
 	EVT_MENU(ID_SOURCETEXTCTRL_EXAMINE_VALUE, SourceTextCtrl::OnExamineValue)
 	EVT_MENU(ID_SOURCETEXTCTRL_RUN_TO_HERE, SourceTextCtrl::OnRunToHere)
 	EVT_MENU(ID_SOURCETEXTCTRL_TOGGLE_BREAKPOINT, SourceTextCtrl::OnToggleBreakpoint)
-	EVT_STC_DWELLEND(wxID_ANY, SourceTextCtrl::OnDwellEnd)
 	EVT_STC_DWELLSTART(wxID_ANY, SourceTextCtrl::OnDwellStart)
 	EVT_STC_MARGINCLICK(wxID_ANY, SourceTextCtrl::OnMarginClick)
 END_EVENT_TABLE()
 // }}}
 
 // {{{ SourceTextCtrl::SourceTextCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name)
-SourceTextCtrl::SourceTextCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name) : wxStyledTextCtrl(parent, id, pos, size, style, name), menuPos(wxSTC_INVALID_POSITION), menuShown(false), tipWindow(NULL) {
+SourceTextCtrl::SourceTextCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style, const wxString &name) : wxStyledTextCtrl(parent, id, pos, size, style, name), menuPos(wxSTC_INVALID_POSITION), menuShown(false) {
 	config = wxConfigBase::Get();
 	handler = dynamic_cast<SourceTextCtrlHandler *>(parent);
 
@@ -244,14 +243,6 @@ void SourceTextCtrl::OnDoubleClick(wxMouseEvent &event) {
 
 	if (pos != wxSTC_INVALID_POSITION) {
 		ToggleBreakpoint(LineFromPosition(pos));
-	}
-}
-// }}}
-// {{{ void SourceTextCtrl::OnDwellEnd(wxStyledTextEvent &event)
-void SourceTextCtrl::OnDwellEnd(wxStyledTextEvent &event) {
-	if (tipWindow) {
-		tipWindow->Destroy();
-		tipWindow = NULL;
 	}
 }
 // }}}

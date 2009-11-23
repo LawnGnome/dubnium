@@ -39,21 +39,18 @@
 
 #include "ID.h"
 #include "ToolbarPanel.h"
-#include "ToolTipWindow.h"
 
-class PropertiesPanel : public ToolbarPanel, public ToolTipProvider {
+class PropertiesPanel : public ToolbarPanel {
 	public:
 		PropertiesPanel(ConnectionPage *parent, wxWindowID id = wxID_ANY);
 
 		DBGp::Property *GetProperty(const wxString &name);
 		wxString GetPropertyValue(const wxString &name) const;
-		virtual wxString GetTipText(const wxPoint &mousePos);
 		void SetStackLevel(const DBGp::StackLevel *level);
 
 	protected:
 		DBGp::Property::PropertyMap properties;
 		wxTreeCtrl *tree;
-		ToolTipWindow toolTip;
 
 		void AddProperty(const wxTreeItemId &parent, const DBGp::Property *prop);
 		void OnItemActivated(wxTreeEvent &event);
