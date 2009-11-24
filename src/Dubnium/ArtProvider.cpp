@@ -51,6 +51,14 @@ wxBitmap ArtProvider::CreateBitmap(const wxArtID &id, const wxArtClient &client,
 
 	wxMemoryInputStream mis(img->image, img->size);
 	wxImage image(mis, wxBITMAP_TYPE_PNG);
+#elif __WXMAC__
+	wxString path(wxGetCwd());
+	path << wxT("/Dubnium.app/Contents/Resources/") << id << wxT(".png");
+	if (!wxFileExists(path)) {
+		return wxNullBitmap;
+	}
+
+	wxImage image(path, wxBITMAP_TYPE_PNG);
 #elif DUBNIUM_DEBUG
 	wxString path(wxT(__FILE__));
 	path = wxPathOnly(path);

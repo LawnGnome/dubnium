@@ -31,15 +31,9 @@
 
 #include "PropertyTipWindow.h"
 
-#include <wx/gbsizer.h>
-#include <wx/settings.h>
-#include <wx/stattext.h>
+#include <wx/intl.h>
 
-// {{{ Event table
-BEGIN_EVENT_TABLE(PropertyTipWindow, wxPopupTransientWindow)
-	EVT_MOTION(PropertyTipWindow::OnMouseMove)
-END_EVENT_TABLE()
-// }}}
+static const int MAXIMUM_CHILD_ELEMENTS = 20;
 
 // {{{ wxString TruncateValue(const wxString &value, size_t maxLength = 60)
 wxString TruncateValue(const wxString &value, size_t maxLength = 60) {
@@ -55,6 +49,18 @@ wxString TruncateValue(const wxString &value, size_t maxLength = 60) {
 
 	return value;
 }
+// }}}
+
+#if wxUSE_POPUPWIN
+
+#include <wx/gbsizer.h>
+#include <wx/settings.h>
+#include <wx/stattext.h>
+
+// {{{ Event table
+BEGIN_EVENT_TABLE(PropertyTipWindow, wxPopupTransientWindow)
+	EVT_MOTION(PropertyTipWindow::OnMouseMove)
+END_EVENT_TABLE()
 // }}}
 
 // {{{ PropertyTipWindow::PropertyTipWindow(wxWindow *parent, const DBGp::Property *prop)
@@ -92,10 +98,10 @@ PropertyTipWindow::PropertyTipWindow(wxWindow *parent, const DBGp::Property *pro
 			}
 
 			// We'll truncate at an arbitrarily chosen 20 elements.
-			if (numShown >= 20) {
+			if (numShown >= MAXIMUM_CHILD_ELEMENTS) {
 				wxString rem;
 
-				rem.Printf(_("<remaining %d element(s) omitted>"), children.size() - 20);
+				rem.Printf(_("<remaining %d element(s) omitted>"), children.size() - MAXIMUM_CHILD_ELEMENTS);
 				sizer->Add(new wxStaticText(this, -1, rem), wxGBPosition(++numShown, 0), wxGBSpan(1, 3));
 
 				break;
@@ -143,5 +149,52 @@ wxPoint PropertyTipWindow::CalculatePosition() {
 	return wxPoint(x, y);
 }
 // }}}
+
+#else
+
+// {{{ wxString PropertyAsString(const DBGp::Property *prop)
+wxString PropertyAsString(const DBGp::Property *prop) {
+	/* It might be nice to unify this with the codepath in the
+	 * PropertyTipWindow constructor at some point, since they're doing
+	 * very similar things. */
+	wxString text;
+
+	wxASSERT(prop != NULL);
+	text << prop->GetFullName() << wxT(" (") << prop->GetType().GetName() << wxT(") : ");
+
+	if (prop->HasChildren()) {
+		const DBGp::Property::PropertyMap children = prop->GetChildren();
+		int numShown = 0;
+
+		for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
+			const DBGp::Property *child = i->second;
+
+			text << wxT("\n\t") << child->GetName() << wxT(" (") << child->GetType().GetName() << wxT(") : ");
+			if (child->HasChildren()) {
+				text << _("<complex data structure>");
+			}
+			else {
+				text << TruncateValue(child->GetData());
+			}
+
+			if (++numShown >= MAXIMUM_CHILD_ELEMENTS) {
+				wxString rem;
+
+				rem.Printf(_("<remaining %d element(s) omitted>"), children.size() - MAXIMUM_CHILD_ELEMENTS);
+				text << wxT("\n") << rem;
+
+				break;
+			}
+		}
+	}
+	else {
+		text << TruncateValue(prop->GetData());
+	}
+
+	return text;
+}
+// }}}
+
+#endif
 
 // vim:set fdm=marker ts=8 sw=8 noet cin:

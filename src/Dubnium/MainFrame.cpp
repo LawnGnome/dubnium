@@ -74,9 +74,12 @@ MainFrame::MainFrame() : wxFrame(NULL, ID_MAINFRAME, _("Dubnium")) {
 	SetSizer(sizer);
 	sizer->SetSizeHints(this);
 
+#ifndef __WXMAC__
 	wxIcon icon;
 	icon.CopyFromBitmap(wxArtProvider::GetBitmap(wxT("icon"), wxART_TOOLBAR, wxSize(32, 32)));
 	SetIcon(icon);
+#endif
+
 	LoadSize();
 }
 // }}}
@@ -90,9 +93,11 @@ MainFrame::~MainFrame() {
 wxMenuBar *MainFrame::CreateMenuBar() {
 	wxMenuBar *menuBar = new wxMenuBar;
 
+#ifndef __WXMAC__
 	wxMenu *fileMenu = new wxMenu;
 	fileMenu->Append(wxID_EXIT);
 	menuBar->Append(fileMenu, _("&File"));
+#endif
 
 	wxMenu *toolMenu = new wxMenu;
 	toolMenu->Append(wxID_PREFERENCES);

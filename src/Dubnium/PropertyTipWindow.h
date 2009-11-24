@@ -32,9 +32,11 @@
 #ifndef DUBNIUM_PROPERTYTIPWINDOW_H
 #define DUBNIUM_PROPERTYTIPWINDOW_H
 
-#include <wx/popupwin.h>
-
 #include "DBGp/Property.h"
+
+#if wxUSE_POPUPWIN
+
+#include <wx/popupwin.h>
 
 class PropertyTipWindow : public wxPopupTransientWindow {
 	public:
@@ -50,6 +52,14 @@ class PropertyTipWindow : public wxPopupTransientWindow {
 
 		DECLARE_EVENT_TABLE()
 };
+
+#else
+
+#include <wx/string.h>
+
+wxString PropertyAsString(const DBGp::Property *prop);
+
+#endif
 
 #endif
 

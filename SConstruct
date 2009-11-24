@@ -125,6 +125,16 @@ else:
 		env.Append(CXXFLAGS=" -O3 ")
 		env.ParseConfig('wx-config --cxxflags --libs std,aui,richtext,stc')
 
+	# OS X specific hackery. This is going to kill any support for 10.4 and
+	# earlier, but realistically, they're near enough to dead anyway.
+	if platform.system() == "Darwin":
+		env.MergeFlags("-arch i386")
+		prefix = None
+	else:
+		# Install prefix handling. By default, we'll use /usr/local.
+		prefix = ARGUMENTS.get("PREFIX", "/usr/local")
+		env.Append(CXXFLAGS = " -DPREFIX=\\\"%s\\\" " % prefix)
+
 	# Test our environment settings.
 	conf = Configure(env, custom_tests={"CheckLongLong": CheckLongLong, "CheckWX": CheckWX})
 
@@ -137,10 +147,6 @@ else:
 		Exit(1)
 
 	conf.Finish()
-
-	# Install prefix handling. By default, we'll use /usr/local.
-	prefix = ARGUMENTS.get("PREFIX", "/usr/local")
-	env.Append(CXXFLAGS = " -DPREFIX=\\\"%s\\\" " % prefix)
 
 	# First compile the library, then the binaries in this directory that
 	# depend on it.

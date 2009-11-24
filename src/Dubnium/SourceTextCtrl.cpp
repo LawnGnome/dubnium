@@ -258,8 +258,17 @@ void SourceTextCtrl::OnDwellStart(wxStyledTextEvent &event) {
 	DBGp::Property *prop = GetPropertyAtPosition(event.GetPosition());
 
 	if (prop) {
+#if wxUSE_POPUPWIN
 		PropertyTipWindow *tip = new PropertyTipWindow(this, prop);
 		tip->Popup();
+#else
+		/* This is for OS X and any other platform without
+		 * wxPopupTransientWindow -- at least they get _something_,
+		 * even if it's not very useful. */
+
+		wxTipWindow *tip = new wxTipWindow(this, PropertyAsString(prop), 640, &tip);
+		tip->SetBoundingRect(wxRect(-1, -1, -1, -1));
+#endif
 	}
 }
 // }}}

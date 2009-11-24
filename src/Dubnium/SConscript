@@ -1,4 +1,5 @@
 import os
+import platform
 
 Import(["env", "libDBGp"])
 
@@ -46,7 +47,7 @@ env.Clean(prog, [
 	]
 )
 
-if os.name != "nt":
+if os.name != "nt" and platform.system() != "Darwin":
 	Import(["prefix"])
 	install = env.InstallAs("%s/bin/dubnium" % prefix, prog)
 	env.Alias("install", install)

@@ -1,5 +1,6 @@
 import glob
 import os
+import platform
 
 Import(["env"])
 
@@ -10,6 +11,8 @@ if os.name == "nt":
 		actions.append(env.Data("%s.data.c" % file, file))
 	images = env.StaticLibrary(target="images", source=["images.cpp"])
 	env.Depends(images, actions)
+elif platform.system() == "Darwin":
+	images = None
 else:
 	Import(["prefix"])
 	install = env.Install("%s/share/dubnium" % prefix, glob.glob("*.png"))
