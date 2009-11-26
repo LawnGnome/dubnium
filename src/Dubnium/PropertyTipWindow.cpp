@@ -83,7 +83,7 @@ PropertyTipWindow::PropertyTipWindow(wxWindow *parent, const DBGp::Property *pro
 		const DBGp::Property::PropertyMap children = prop->GetChildren();
 		int numShown = 0;
 
-		sizer->Add(20, 20, wxGBPosition(1, 0));
+		sizer->Add(20, 10, wxGBPosition(1, 0));
 		
 		for (DBGp::Property::PropertyMap::const_iterator i = children.begin(); i != children.end(); i++) {
 			DBGp::Property *child = i->second;
